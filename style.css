@@ -1,0 +1,69 @@
+/* 
+    Created on : 19-may-2016, 11:50:01
+    Author     : Aram Àvila Salvadó
+*/
+
+body{
+    width: 80%;
+    margin: auto;
+    min-width: 400px;
+}
+
+#title{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: auto;
+   text-align: center;
+}
+
+#preVis{
+    width: 100%;
+    height: 200px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+}
+
+.selectors{
+    width: 48%;
+    height: 300px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: green;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#shapeSelector{
+    float:left;
+}
+
+#waveSelector{
+    float:right;
+}
+
+#editor{
+    width: 100%;
+    height: 400px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    margin-bottom: 10px;
+}
+
+#buttonsDiv{
+    background-color: gray;
+    width: 50%;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+#settings, #print{
+    width: 40%;
+    height: 30px;
+    margin:auto;
+}
+
+#print{
+    float:right
+}
