@@ -7,7 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script type="text/javascript" src="js/htmlManager.js"></script>
-        <script type="text/javascript" src="js/ddSlick.min.js"></script>
+
+        <script type="text/javascript" src="js/paper-full.min.js"></script>
+        <script type="text/javascript" src="js/canvasManager.js"></script>
 
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
@@ -15,8 +17,14 @@
         <h1 id="title">WAVES!</h1>
         <canvas id="preVis"></canvas>
         <div>
-            <div id="shapeSelector" class="selectors"></div>
-            <div id="waveSelector" class="selectors"></div>
+            <div id="shapeSelector" class="selectors">
+                <div id="shapeImageContainer">
+                </div>
+            </div>
+            <div id="waveSelector" class="selectors">
+                <div id="waveImageContainer">
+                </div>
+            </div>
         </div>
 
         <canvas id="editor"></canvas>
