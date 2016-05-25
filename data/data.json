@@ -1,0 +1,199 @@
+{"wavesData" : [
+    {
+        "name": "line",
+        "description": "A simple straight line",
+        "imageSrc": "img/line.jpg",
+        "simetrical": false,
+        "basePoints": [[0,0],[0.25,0],[0.5,0],[0.75,0]],
+        "refPoints": [[0,1],[0,1],[0,1],[0,1]],
+        "points": [0,0,0,0],
+        "minTurn": 0
+        
+    },
+    {
+        "name": "cross",
+        "description": "A cross line",
+        "imageSrc": "img/cross.jpg",
+        "simetrical": true,
+        "basePoints": [[0,0],[0.25,0],[0.5,0],[0.75,0]],
+        "refPoints": [[0,1],[0,1],[0,1],[0,1]],
+        "points": [0,0.5,1,0.5],
+        "minTurn": 1
+    },
+    {
+        "name": "snake",
+        "description": "does S's",
+        "imageSrc": "img/cat3.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "cat4",
+        "description": "Description for cat4",
+        "imageSrc": "img/cat4.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "cat5",
+        "description": "Description for cat5",
+        "imageSrc": "img/cat5.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "cat6",
+        "description": "Description for cat6",
+        "imageSrc": "img/cat6.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "dog1",
+        "description": "Description for dog1",
+        "imageSrc": "img/dog1.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "dog2",
+        "description": "Description for dog2",
+        "imageSrc": "img/dog2.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "dog3",
+        "description": "Description for dog3",
+        "imageSrc": "img/dog3.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "dog4",
+        "description": "Description for dog4",
+        "imageSrc": "img/dog4.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "dog5",
+        "description": "Description for dog5",
+        "imageSrc": "img/dog5.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    },
+    {
+        "name": "dog6",
+        "description": "Description for dog6",
+        "imageSrc": "img/dog6.jpg",
+        "simetrical": false,
+        "basePoints": [],
+        "refPoints":[],
+        "points": []
+    }
+],
+"shapesData" : [
+    {
+        "name": "line",
+        "description": "A line to follow",
+        "imageSrc": "img/line.jpg",
+        "closed": false,
+        "points": [[0,0],[1,0]]
+    },
+    {
+        "name": "square",
+        "description": "A square with 4 sides",
+        "imageSrc": "img/square.jpg",
+        "closed": true,
+        "points": [[0,0],[1,0],[1,1],[0,1]]
+    },
+    {
+        "name": "triangle",
+        "description": "A triangle like any other",
+        "imageSrc": "img/cat3.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "cat4",
+        "description": "Description for cat4",
+        "imageSrc": "img/cat4.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "cat5",
+        "description": "Description for cat5",
+        "imageSrc": "img/cat5.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "cat6",
+        "description": "Description for cat6",
+        "imageSrc": "img/cat6.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "dog1",
+        "description": "Description for dog1",
+        "imageSrc": "img/dog1.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "dog2",
+        "description": "Description for dog2",
+        "imageSrc": "img/dog2.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "dog3",
+        "description": "Description for dog3",
+        "imageSrc": "img/dog3.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "dog4",
+        "description": "Description for dog4",
+        "imageSrc": "img/dog4.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "dog5",
+        "description": "Description for dog5",
+        "imageSrc": "img/dog5.jpg",
+        "closed": false,
+        "points": []
+    },
+    {
+        "name": "dog6",
+        "description": "Description for dog6",
+        "imageSrc": "img/dog6.jpg",
+        "closed": false,
+        "points": []
+    }
+]}
