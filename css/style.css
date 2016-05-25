@@ -13,7 +13,7 @@ body{
     margin-top: 30px;
     margin-bottom: 30px;
     margin-left: auto;
-   text-align: center;
+    text-align: center;
 }
 
 #preVis{
@@ -32,14 +32,32 @@ body{
     border-color: green;
     margin-top: 10px;
     margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.selectors img{
+    min-width: 90px;
+    width: 19%;
+    padding: 0.5%;
 }
 
 #shapeSelector{
     float:left;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #waveSelector{
     float:right;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#waveImageContainer, #shapeImageContainer{
+    position: relative;
+    background-color:rgba(0, 0, 0, 0.5);
 }
 
 #editor{
