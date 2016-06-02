@@ -5,6 +5,8 @@ var Wave = function () {
     basePoints = [];
     refPoints = [];
     points = [];
+    minTurn = 0;
+    optimalSize = 0;
 };
 
 var Shape = function () {
@@ -43,7 +45,8 @@ $(document).ready(function () {
             wave.basePoints = json.wavesData[index].basePoints;
             wave.refPoints = json.wavesData[index].refPoints;
             wave.points = json.wavesData[index].points;
-
+            wave.minTurn = json.wavesData[index].minTurn;
+            wave.optimalSize = json.wavesData[index].optimalSize;
 
             waveList.set(wave.name, wave);
 
@@ -183,8 +186,5 @@ function jsonLoaded(json) {
 }
 
 function updatePrevis() {
-    console.log("wave: " + activeWave.name);
-    console.log("shape: " + activeShape.name);
-    console.log("------------");
     updateCanvas(activeShape, activeWave);
 }
