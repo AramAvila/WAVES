@@ -3,7 +3,7 @@
         "name": "line",
         "description": "A simple straight line",
         "imageSrc": "img/line.jpg",
-        "simetrical": false,
+        "symmetrical": false,
         "points": [[0],[0]],
         "minTurn": 0.05,
         "optimalSize": 2
@@ -12,7 +12,7 @@
         "name": "cross",
         "description": "A cross line",
         "imageSrc": "img/cross.jpg",
-        "simetrical": true,
+        "symmetrical": true,
         "points": [[0],[0.1], [0.2],[0.3],[0.4],[0.5],[0.4],[0.3],[0.2],[0.1],[0],[-0.1],[-0.2],[-0.3],[-0.4],[-0.5],[-0.4],[-0.3],[-0.2],[-0.1]],
         "minTurn": 0.1,
         "optimalSize": 10
@@ -21,7 +21,7 @@
         "name": "snake",
         "description": "does S's",
         "imageSrc": "img/serp.jpg",
-        "simetrical": false,
+        "symmetrical": false,
         "points": [[0.5,-0.5],[-0.5,0],[0,0.5]],
         "minTurn": 0.1,
         "optimalSize": 3
@@ -30,7 +30,7 @@
         "name": "curve",
         "description": "Description for cat6",
         "imageSrc": "img/curve.jpg",
-        "simetrical": true,
+        "symmetrical": true,
         "points": [[0.5],[0.48],[0.45],[0.4],[0.35],[0.3],[0.2],[0.1],[0],[-0.2],[-0.5],[-0.2],[0],[0.1],[0.2],[0.3],[0.35],[0.4],[0.45],[0.48],[0.5]],
         "minTurn": 0.1,
         "optimalSize": 15
@@ -39,7 +39,7 @@
         "name": "cross2",
         "description": "A cross line",
         "imageSrc": "img/cross.jpg",
-        "simetrical": false,
+        "symmetrical": false,
         "points": [[0],[0.5], [0],[-0.5]],
         "minTurn": 0.1,
         "optimalSize": 5
@@ -48,7 +48,7 @@
         "name": "updwn",
         "description": "Description for dog1",
         "imageSrc": "img/updwn.jpg",
-        "simetrical": false,
+        "symmetrical": false,
         "points": [[0],[0.5],[0],[-0.5]],
         "minTurn": 0.08,
         "optimalSize": 5
