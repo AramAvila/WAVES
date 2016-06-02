@@ -13,7 +13,6 @@ var Coord = function (x, y) {
     this.sum = function (coord2) {
         return new Coord(this.x + coord2.x, this.y + coord2.y);
     };
-
     this.subs = function (coord2) {
         return new Coord(coord2.x - this.x, coord2.y - this.y);
     };
