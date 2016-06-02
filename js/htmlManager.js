@@ -1,9 +1,8 @@
 var Wave = function () {
     name = "";
+    description = "";
     previewImage = "";
-    simetrical = false;
-    basePoints = [];
-    refPoints = [];
+    symmetrical = false;
     points = [];
     minTurn = 0;
     optimalSize = 0;
@@ -11,6 +10,7 @@ var Wave = function () {
 
 var Shape = function () {
     name = "";
+    description = "";
     previewImage = "";
     closed = false;
     points = [];
@@ -40,10 +40,9 @@ $(document).ready(function () {
 
             var wave = new Wave();
             wave.name = json.wavesData[index].name;
+            wave.description = json.wavesData[index].description;
             wave.previewImage = json.wavesData[index].imageSrc;
-            wave.simetrical = json.wavesData[index].simetrical;
-            wave.basePoints = json.wavesData[index].basePoints;
-            wave.refPoints = json.wavesData[index].refPoints;
+            wave.symmetrical = json.wavesData[index].symmetrical;
             wave.points = json.wavesData[index].points;
             wave.minTurn = json.wavesData[index].minTurn;
             wave.optimalSize = json.wavesData[index].optimalSize;
@@ -53,7 +52,7 @@ $(document).ready(function () {
             var img = $('<img />', {
                 id: json.wavesData[index].name,
                 src: json.wavesData[index].imageSrc,
-                alt: json.wavesData[index].text
+                alt: json.wavesData[index].description
             });
             img.appendTo($("#waveImageContainer"));
         });
@@ -62,6 +61,7 @@ $(document).ready(function () {
 
             var shape = new Shape();
             shape.name = json.shapesData[index].name;
+            shape.description = json.shapesData[index].description;
             shape.previewImage = json.shapesData[index].imageSrc;
             shape.closed = json.shapesData[index].closed;
             shape.points = json.shapesData[index].points;
@@ -71,7 +71,7 @@ $(document).ready(function () {
             var img = $('<img />', {
                 id: json.shapesData[index].name,
                 src: json.shapesData[index].imageSrc,
-                alt: json.shapesData[index].text
+                alt: json.shapesData[index].description
             });
             img.appendTo($("#shapeImageContainer"));
         });
