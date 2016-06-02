@@ -335,10 +335,8 @@ function updateCanvas(activeShape, activeWave) {
     }
 
     var optimalNumber = Math.round(perimeter / activeWave.optimalSize);
-    console.log("optimalNumber: " + optimalNumber);
 
     var waveLength = perimeter / optimalNumber;
-    console.log("waveLength: " + waveLength);
 
     var segmentedShape = [];
     for (var i = 0; i < finalShape.length; i++) {
@@ -361,7 +359,7 @@ function updateCanvas(activeShape, activeWave) {
         for (var c = 0; c < pointsInSegment.length; c++) {
             pointsToDraw.push(norm.scale(pointsInSegment[c] * waveLength).sum(p2));
 
-            if (activeWave.simetrical) {
+            if (activeWave.symmetrical) {
                 pointsToDrawMirror.push(norm.scale(pointsInSegment[c] * -waveLength).sum(p2));
             }
         }
@@ -390,7 +388,7 @@ function updateCanvas(activeShape, activeWave) {
         path.strokeColor = "red";
         lines.push(path);
 
-        if (activeWave.simetrical) {
+        if (activeWave.symmetrical) {
             var path = new paper.Path(
                     new paper.Point(pointsToDrawMirror[pointsToDrawMirror.length - 1].x, pointsToDrawMirror[pointsToDraw.length - 1].y),
                     new paper.Point(pointsToDrawMirror[0].x, pointsToDrawMirror[0].y));
@@ -400,7 +398,7 @@ function updateCanvas(activeShape, activeWave) {
         }
     }
 
-    if (activeWave.simetrical) {
+    if (activeWave.symmetrical) {
         for (var i = 0; i < pointsToDrawMirror.length - 1; i++) {
             var path = new paper.Path(
                     new paper.Point(pointsToDrawMirror[i].x, pointsToDrawMirror[i].y),
@@ -426,7 +424,6 @@ function updateCanvas(activeShape, activeWave) {
 
     canvas[0].view.draw();
     canvas[1].view.draw();
-    console.log("-----");
 }
 
 
