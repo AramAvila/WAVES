@@ -180,7 +180,7 @@ function jsonLoaded(json) {
     $("#waveSelector").css("background-image", "url(" + $(selectedWave).attr("src") + ")"); //random wave image added as background
     $("#waveImageContainer").hide(); //the image selection is hidden
 
-    var selectedShape = $("#shapeImageContainer").children()[Math.floor(Math.random() * $(json.wavesData).length)];
+    var selectedShape = $("#shapeImageContainer").children()[Math.floor(Math.random() * $(json.shapesData).length)];
     activeShape = shapeList.get($(selectedShape).attr("id"));
     $("#shapeSelector").css("background-image", "url(" + $(selectedShape).attr("src") + ")"); //random wave image added as background
     $("#shapeImageContainer").hide(); //the image selection is hidden
