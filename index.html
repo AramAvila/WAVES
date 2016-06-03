@@ -5,11 +5,15 @@
         <title>WAVES!</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-        <script type="text/javascript" src="js/htmlManager.js"></script>
-
+        <script type="text/javascript" src="js/FileSaver.min.js"></script>
         <script type="text/javascript" src="js/paper-full.min.js"></script>
+        
+        <script type="text/javascript" src="js/htmlManager.js"></script>
         <script type="text/javascript" src="js/canvasManager.js"></script>
+        <script type="text/javascript" src="js/flatGeometryManager.js"></script>
+        <script type="text/javascript" src="js/gcodeManager.js"></script>
 
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
@@ -31,6 +35,76 @@
         <div id="buttonsDiv">
             <button id="settings">Settings</button>
             <button id="print">Print!</button>
+        </div>
+        <div>
+            <ul id="additionalOptions">
+                <li>
+                    <p>Initial heigth:</p>
+                    <input type="text" placeholder="mm" id="initialHeight" value="10">
+                    <p>mm</p>
+                </li>
+                <li>
+                    <p>Layer heigth</p>
+                    <input type="text" placeholder="mm" id="layerHeight" value="1">
+                    <p>mm</p>
+                </li>
+                <li>
+                    <p>Z travel height</p>
+                    <input type="text" placeholder="mm" id="zTravelHeight" value="4">
+                    <p>mm</p>
+                </li>
+                <li>
+                    <p>Material diameter</p>
+                    <input type="text" placeholder="mm" id="matDiameter" value="38">
+                    <p>mm</p>
+                </li>
+                <li>
+                    <p>Noozle diameter</p>
+                    <input type="text" placeholder="mm" id="nozzDiameter" value="1.5">
+                    <p>mm</p>
+                </li>
+                <li>
+                    <p>Feedrate:</p>
+                    <ul>
+                        <li>                
+                            <p>Travel</p>
+                            <input type="text" placeholder="mm/s" id="feedrateTravel" value="5000">
+                            <p>mm/s</p>
+                        </li>
+                        <li>   
+                            <p>Printing</p>
+                            <input type="text" placeholder="mm/s" id="feedratePrinting" value="2000">
+                            <p>mm/s</p>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <p>Extruder:</p>
+                    <ul>
+                        <li>
+                            <p>Retraction</p>
+                            <input type="text" placeholder="mm" id="extruderRetraction" value="2">
+                            <p>mm</p>
+                        </li>
+                        <li>
+                            <p>Feedrate</p>
+                            <input type="text" placeholder="mm/s" id="extruderFeedrate" value="600">
+                            <p>mm/s</p>
+                        </li>
+                        <li>
+                            <p>Build up pressure</p>
+                            <input type="text" placeholder="Extrusion (mm)" id="buildUpPressExtrusion" value="1">
+                            <p>mm</p>
+                        </li>
+                        <li>   
+                            <p>Release pressure</p>
+                            <input type="text" placeholder="Extrusion (mm)" id="releasePressExtrusion" value="1">
+                            <p>mm</p>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </body>
 </html>
