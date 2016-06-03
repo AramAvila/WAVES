@@ -69,7 +69,7 @@ function saveGcode() {
                 if (c + 1 < gCodeData[t].length) {//if it's not the last line we will move the extruder to the next line starting point
                     //fileData.push(";---Moving to next line start" + lBr);
 
-                    if (gCodeData[t][c].end.distance(gCodeData[t][c + 1].start > 2)) { //if the next point is not farther away than 2mm, the extrusor will not move.
+                    if (gCodeData[t][c].end.distance(gCodeData[t][c + 1].start) > 2) { //if the next point is not farther away than 2mm, the extrusor will not move.
                         extrusion -= currentData.extruderRetraction;
                         fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
 
