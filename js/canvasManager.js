@@ -95,7 +95,7 @@ var Arch = function (start, center, end) {
         if (Math.abs(angleSide - angleTest) < 0.1) {
             inverse = true;
         }
-        
+
         var fragments = [];
         if (inverse) {
             var vec = new Vector(this.center, this.start);
@@ -161,6 +161,20 @@ function setUpCanvas() {
 
 }
 
+/*var angle = Math.acos((v1[0] * v2[0] + v1[1] * v2[1]) / (Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2))));
+ var color = new paper.Color(Math.random(), Math.random(), Math.random());
+ var path = new paper.Path(new paper.Point(closerV1.x, closerV1.y), new paper.Point(closer1Corrected.x, closer1Corrected.y));
+ path.strokeWidth = 2;
+ path.strokeColor = color;
+ lines.push(path);
+ 
+ var path = new paper.Path(new paper.Point(closerV2.x, closerV2.y), new paper.Point(closer2Corrected.x, closer2Corrected.y));
+ path.strokeWidth = 2;
+ path.strokeColor = color;
+ lines.push(path);
+ 
+ 1 rad = 180/pi degrees*/
+
 function updateCanvas(activeShape, activeWave) {
 
     preVisLayer.activate();
@@ -173,249 +187,35 @@ function updateCanvas(activeShape, activeWave) {
     var canvasScale = 3;
     var canvasOrigin = new Coord(300, 100);
 
+    var tangentArches = getShapeTangents(activeShape, activeWave.minTurn);
+    
+    //printSize is the size at wich the shape should be printed, (mm)
+    var printSize = 100;
+    for (var i = 0; i < tangentArches.length; i++) {
+        tangentArches[i].scale(printSize);
+    }
+
+    var tangentComposition = getComposition(tangentArches, activeWave);
+
+    gCodeData = [];
+    
     var lines = [];
+    for (var c = 0; c < tangentComposition.length; c++) {
+        var printLine = [];
+        for (var i = 0; i < tangentComposition[c].length - 1; i++) {
+            if (tangentComposition[c][i] !== 'b' && tangentComposition[c][i + 1] !== 'b') {
+                var line = new Line(tangentComposition[c][i], tangentComposition[c][i + 1]);
+                var path = new paper.Path(
+                        new paper.Point(tangentComposition[c][i].x * canvasScale + canvasOrigin.x, tangentComposition[c][i].y * canvasScale + canvasOrigin.y),
+                        new paper.Point(tangentComposition[c][i + 1].x * canvasScale + canvasOrigin.x, tangentComposition[c][i + 1].y * canvasScale + canvasOrigin.y));
 
-    var end = activeShape.points.length - 2;
-    if (activeShape.closed) {
-        end = activeShape.points.length - 1;
-    }
-
-    var finalPoints = [];
-
-    for (var c = 0; c < end; c++) {
-
-        var v1s = new Coord(activeShape.points[c][0], activeShape.points[c][1]);
-        var v1e = new Coord(activeShape.points[c + 1][0], activeShape.points[c + 1][1]);
-
-        var v2s = new Coord(activeShape.points[c + 1][0], activeShape.points[c + 1][1]);
-
-        var v2e;
-        if (activeShape.closed && c === activeShape.points.length - 2) {
-            v2e = new Coord(activeShape.points[1][0], activeShape.points[1][1]);
-        } else {
-            v2e = new Coord(activeShape.points[c + 2][0], activeShape.points[c + 2][1]);
-        }
-
-        var v1 = new Vector(v1e, v1s);
-        var v2 = new Vector(v2e, v2s);
-
-        var v1RotPos = v1.rotate(Math.PI / 2).sum(v1s);         //sin and cos is expected to be in radians 90º = PI/2
-        var v1RotNeg = v1.rotate(3 * Math.PI / 2).sum(v1s);     //-90 degrees = 270 degrees = 3 * Math.PI / 2
-
-        var v2RotPos = v2.rotate(Math.PI / 2).sum(v2s);
-        var v2RotNeg = v2.rotate(3 * Math.PI / 2).sum(v2s);
-
-        var closerV1, closerV2;
-
-        if (v1RotPos.distance(v2e) < v1RotNeg.distance(v2e)) {
-            closerV1 = v1RotPos;
-        } else {
-            closerV1 = v1RotNeg;
-        }
-
-        if (v2RotPos.distance(v1s) < v2RotNeg.distance(v1s)) {
-            closerV2 = v2RotPos;
-        } else {
-            closerV2 = v2RotNeg;
-
-        }
-
-        var cV1Reduction = new Vector(v1s, closerV1);
-        var cV2Reduction = new Vector(v2s, closerV2);
-
-        var k = activeWave.minTurn / Math.sqrt(Math.pow(cV1Reduction.x, 2) + Math.pow(cV1Reduction.y, 2));
-        var v = activeWave.minTurn / Math.sqrt(Math.pow(cV2Reduction.x, 2) + Math.pow(cV2Reduction.y, 2));
-
-        var closer1Corrected = new Coord(v1s.x + k * cV1Reduction.x, v1s.y + k * cV1Reduction.y);
-        var closer2Corrected = new Coord(v2s.x + v * cV2Reduction.x, v2s.y + v * cV2Reduction.y);
-
-        var intersection = findLineIntersection(closer1Corrected, v1, closer2Corrected, v2);
-
-        var archStart = findLineIntersection(intersection, cV1Reduction, v1s, v1);
-        var archEnd = findLineIntersection(intersection, cV2Reduction, v2s, v2);
-
-        var arch = new Arch(archStart, intersection, archEnd);
-
-        finalPoints.push(arch);
-
-        /*var color = new paper.Color(Math.random(), Math.random(), Math.random());
-         
-         var path = new paper.Path(new paper.Point(v1s[0], v1s[1]), new paper.Point(archStart[0], archStart[1]));
-         path.strokeWidth = 2;
-         path.strokeColor = color;
-         lines.push(path);
-         
-         path = new paper.Path(new paper.Point(archStart[0], archStart[1]), new paper.Point(archEnd[0], archEnd[1]));
-         path.strokeWidth = 2;
-         path.strokeColor = color;
-         lines.push(path);
-         
-         path = new paper.Path(new paper.Point(archEnd[0], archEnd[1]), new paper.Point(v2e[0], v2e[1]));
-         path.strokeWidth = 2;
-         path.strokeColor = color;
-         lines.push(path);
-         
-         var color = new paper.Color(Math.random(), Math.random(), Math.random());
-         var path = new paper.Path(new paper.Point(closerV1.x, closerV1.y), new paper.Point(closer1Corrected.x, closer1Corrected.y));
-         path.strokeWidth = 2;
-         path.strokeColor = color;
-         lines.push(path);
-         
-         var path = new paper.Path(new paper.Point(closerV2.x, closerV2.y), new paper.Point(closer2Corrected.x, closer2Corrected.y));
-         path.strokeWidth = 2;
-         path.strokeColor = color;
-         lines.push(path);
-         */
-
-
-        //var angle = Math.acos((v1[0] * v2[0] + v1[1] * v2[1]) / (Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2))));
-        //1 rad = 180/pi degrees
-    }
-
-    var finalShape = [];
-
-    if (activeShape.closed) {
-
-        for (var i = 0; i < finalPoints.length; i++) {
-
-            finalShape.push(finalPoints[i]);
-
-            var start = new Coord(finalPoints[i].end.x, finalPoints[i].end.y);
-            var end;
-            if (typeof finalPoints[i + 1] !== 'undefined') {
-                end = new Coord(finalPoints[i + 1].start.x, finalPoints[i + 1].start.y);
-            } else {
-                end = new Coord(finalPoints[0].start.x, finalPoints[0].start.y);
-            }
-
-            finalShape.push(new Line(start, end));
-        }
-
-    } else if (finalPoints.length > 0) {
-
-        var start = new Coord(activeShape.points[0][0], activeShape.points[0][1]);
-
-        var end = new Coord(finalPoints[0].start.x, finalPoints[0].start.y);
-
-        finalShape.push(new Line(start, end));
-
-        for (var i = 0; i < finalPoints.length; i++) {
-
-            finalShape.push(finalPoints[i]);
-
-            var start = new Coord(finalPoints[i].end.x, finalPoints[i].end.y);
-            var end;
-            if (typeof finalPoints[i + 1] !== 'undefined') {
-                end = new Coord(finalPoints[i + 1].start.x, finalPoints[i + 1].start.y);
-            } else {
-                end = new Coord(activeShape.points[activeShape.points.length - 1][0], activeShape.points[activeShape.points.length - 1][1]);
-            }
-
-            finalShape.push(new Line(start, end));
-        }
-
-    } else {
-        var start = new Coord(activeShape.points[0][0], activeShape.points[0][1]);
-
-        var end = new Coord(activeShape.points[1][0], activeShape.points[1][1]);
-
-        finalShape.push(new Line(start, end));
-    }
-
-
-    //PrintScale is the size at wich the shape should be printed, (mm)
-    var printScale = 100;
-    for (var i = 0; i < finalShape.length; i++) {
-        finalShape[i].scale(printScale);
-    }
-
-    var perimeter = 0;
-    for (var i = 0; i < finalShape.length; i++) {
-        perimeter += finalShape[i].size();
-    }
-
-    var optimalNumber = Math.round(perimeter / activeWave.optimalSize);
-
-    var waveLength = perimeter / optimalNumber;
-
-    var segmentedShape = [];
-    for (var i = 0; i < finalShape.length; i++) {
-        var wavesPerPart = finalShape[i].size() / waveLength;
-        segmentedShape = segmentedShape.concat(finalShape[i].fragment(wavesPerPart * activeWave.points.length));
-    }
-
-    var p = 0;
-    var pointsToDraw = [];
-    var pointsToDrawMirror = [];
-
-    for (var i = 0; i < segmentedShape.length - 1; i++) {
-        var p1 = new Coord(segmentedShape[i].x * canvasScale + canvasOrigin.x, segmentedShape[i].y * canvasScale + canvasOrigin.y);
-        var p2 = new Coord(segmentedShape[i + 1].x * canvasScale + canvasOrigin.x, segmentedShape[i + 1].y * canvasScale + canvasOrigin.y);
-        var vec = new Vector(p1, p2);
-
-        var norm = vec.rotate(Math.PI / 2);
-        var pointsInSegment = activeWave.points[p];
-
-        for (var c = 0; c < pointsInSegment.length; c++) {
-            pointsToDraw.push(norm.scale(pointsInSegment[c] * waveLength).sum(p2));
-
-            if (activeWave.symmetrical) {
-                pointsToDrawMirror.push(norm.scale(pointsInSegment[c] * -waveLength).sum(p2));
+                path.strokeWidth = 1;
+                path.strokeColor = "red";
+                lines.push(path);
+                printLine.push(line);
             }
         }
-
-        if (p < activeWave.points.length - 1) {
-            p++;
-        } else {
-            p = 0;
-        }
-    }
-
-    for (var i = 0; i < pointsToDraw.length - 1; i++) {
-        var path = new paper.Path(
-                new paper.Point(pointsToDraw[i].x, pointsToDraw[i].y),
-                new paper.Point(pointsToDraw[i + 1].x, pointsToDraw[i + 1].y));
-        path.strokeWidth = 1;
-        path.strokeColor = "red";
-        lines.push(path);
-    }
-
-    if (activeShape.closed) {
-        var path = new paper.Path(
-                new paper.Point(pointsToDraw[pointsToDraw.length - 1].x, pointsToDraw[pointsToDraw.length - 1].y),
-                new paper.Point(pointsToDraw[0].x, pointsToDraw[0].y));
-        path.strokeWidth = 1;
-        path.strokeColor = "red";
-        lines.push(path);
-
-        if (activeWave.symmetrical) {
-            var path = new paper.Path(
-                    new paper.Point(pointsToDrawMirror[pointsToDrawMirror.length - 1].x, pointsToDrawMirror[pointsToDraw.length - 1].y),
-                    new paper.Point(pointsToDrawMirror[0].x, pointsToDrawMirror[0].y));
-            path.strokeWidth = 1;
-            path.strokeColor = "red";
-            lines.push(path);
-        }
-    }
-
-    if (activeWave.symmetrical) {
-        for (var i = 0; i < pointsToDrawMirror.length - 1; i++) {
-            var path = new paper.Path(
-                    new paper.Point(pointsToDrawMirror[i].x, pointsToDrawMirror[i].y),
-                    new paper.Point(pointsToDrawMirror[i + 1].x, pointsToDrawMirror[i + 1].y));
-            path.strokeWidth = 1;
-            path.strokeColor = "red";
-            lines.push(path);
-        }
-
-        if (activeShape.closed) {
-            var path = new paper.Path(
-                    new paper.Point(pointsToDrawMirror[pointsToDrawMirror.length - 1].x, pointsToDrawMirror[pointsToDrawMirror.length - 1].y),
-                    new paper.Point(pointsToDrawMirror[0].x, pointsToDrawMirror[0].y));
-            path.strokeWidth = 1;
-            path.strokeColor = "red";
-            lines.push(path);
-        }
+        gCodeData.push(printLine);
     }
 
     preVisLayer = new canvas[0].Layer({
@@ -433,81 +233,4 @@ function findLineIntersection(l1P, l1Vd, l2P, l2Vd) {
             l2P.x + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.x) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y),
             l2P.y + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.y) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y)
             );
-}
-
-
-function finalPointsDebug(finalPoints, activeShape, scale, origin) {
-
-    var lines = [];
-    if (activeShape.closed) {
-
-
-        for (var i = 0; i < finalPoints.length; i++) {
-
-            var center = new paper.Point(finalPoints[i].center.x * scale + origin.x, finalPoints[i].center.y * scale + origin.y);
-            var circle = new paper.Path.Circle(center, finalPoints[i].center.distance(finalPoints[i].end) * scale);
-
-            var start = new paper.Point(finalPoints[i].end.x * scale + origin.x, finalPoints[i].end.y * scale + origin.y);
-            var end;
-            if (typeof finalPoints[i + 1] !== 'undefined') {
-                end = new paper.Point(finalPoints[i + 1].start.x * scale + origin.x, finalPoints[i + 1].start.y * scale + origin.y);
-            } else {
-                end = new paper.Point(finalPoints[0].start.x * scale + origin.x, finalPoints[0].start.y * scale + origin.y);
-            }
-
-            var path = new paper.Path(start, end);
-
-            circle.strokeWidth = 2;
-            path.strokeWidth = 2;
-            circle.strokeColor = "red";
-            path.strokeColor = "red";
-            lines.push(circle, path);
-        }
-
-    } else if (finalPoints.length > 0) {
-
-        var start = new paper.Point(activeShape.points[0][0] * scale + origin.x, activeShape.points[0][1] * scale + origin.y);
-
-        var end = new paper.Point(finalPoints[0].start.x * scale + origin.x, finalPoints[0].start.y * scale + origin.y);
-
-        var path = new paper.Path(start, end);
-        path.strokeWidth = 2;
-        path.strokeColor = "blue";
-        lines.push(path);
-
-        for (var i = 0; i < finalPoints.length; i++) {
-
-            var center = new paper.Point(finalPoints[i].center.x * scale + origin.x, finalPoints[i].center.y * scale + origin.y);
-            var circle = new paper.Path.Circle(center, finalPoints[i].center.distance(finalPoints[i].end) * scale);
-
-            var start = new paper.Point(finalPoints[i].end.x * scale + origin.x, finalPoints[i].end.y * scale + origin.y);
-            var end;
-
-            if (typeof finalPoints[i + 1] !== 'undefined') {
-                end = new paper.Point(finalPoints[i + 1].start.x * scale + origin.x, finalPoints[i + 1].start.y * scale + origin.y);
-            } else {
-                end = new paper.Point(activeShape.points[activeShape.points.length - 1][0] * scale + origin.x, activeShape.points[activeShape.points.length - 1][1] * scale + origin.y);
-            }
-
-            var path2 = new paper.Path(start, end);
-
-            circle.strokeWidth = 2;
-            path2.strokeWidth = 2;
-            circle.strokeColor = "red";
-            path2.strokeColor = "green";
-            lines.push(circle, path2);
-        }
-
-    } else {
-        var start = new paper.Point(activeShape.points[0][0] * scale + origin.x, activeShape.points[0][1] * scale + origin.y);
-
-        var end = new paper.Point(activeShape.points[1][0] * scale + origin.x, activeShape.points[1][1] * scale + origin.y);
-
-        var path = new paper.Path(start, end);
-        path.strokeWidth = 2;
-        path.strokeColor = "red";
-        lines.push(path);
-    }
-
-    return lines;
 }

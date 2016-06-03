@@ -30,8 +30,6 @@ var activeShape;
  * An asyncornous event takes place here, check the waves book for more info.
  */
 
-//<script type="text/paperscript" canvas="editor" src="js/canvasManager.js"></script>
-
 $(document).ready(function () {
 
     $.getJSON("data/data.json", function (json) {
@@ -143,6 +141,11 @@ $(document).ready(function () {
             }, 50);
         }
         e.preventDefault();
+    });
+    
+    $("#print").on("click", function (event) {
+        updateAddSettings();
+        saveGcode();
     });
 
     setUpCanvas();
