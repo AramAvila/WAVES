@@ -27,6 +27,15 @@
         "optimalSize": 3
     },
     {
+        "name": "snake",
+        "description": "does S's",
+        "imageSrc": "img/serp.jpg",
+        "symmetrical": false,
+        "points": [[0.5,-0.5],[-0.5,0.5]],
+        "minTurn": 0.1,
+        "optimalSize": 3
+    },
+    {
         "name": "curve",
         "description": "Description for cat6",
         "imageSrc": "img/curve.jpg",
@@ -40,7 +49,7 @@
         "description": "A cross line",
         "imageSrc": "img/cross.jpg",
         "symmetrical": false,
-        "points": [[0],[0.5], [0],[-0.5]],
+        "points": [[0],[0.5, "b"], [0],[-0.5]],
         "minTurn": 0.1,
         "optimalSize": 5
     },
@@ -50,6 +59,15 @@
         "imageSrc": "img/updwn.jpg",
         "symmetrical": false,
         "points": [[0],[0.5],[0],[-0.5]],
+        "minTurn": 0.08,
+        "optimalSize": 5
+    },
+    {
+        "name": "discLine",
+        "description": "Description for dog1",
+        "imageSrc": "img/line.jpg",
+        "symmetrical": false,
+        "points": [[0],[0, "b"],[0],[0]],
         "minTurn": 0.08,
         "optimalSize": 5
     }
