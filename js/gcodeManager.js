@@ -45,8 +45,6 @@ function saveGcode() {
     fileData.push(";---Reset extruder value" + lBr);
     fileData.push("G92 E0" + lBr);
 
-    console.log(gCodeData[0][0]);
-
     for (var z = 0; z < currentData.layers; z++) {
 
         for (var t = 0; t < gCodeData.length; t++) {

@@ -188,17 +188,17 @@ function updateCanvas(activeShape, activeWave) {
     var canvasOrigin = new Coord(300, 100);
 
     var tangentArches = getShapeTangents(activeShape, activeWave.minTurn);
-    
+
     //printSize is the size at wich the shape should be printed, (mm)
     var printSize = 100;
     for (var i = 0; i < tangentArches.length; i++) {
         tangentArches[i].scale(printSize);
     }
 
-    var tangentComposition = getComposition(tangentArches, activeWave);
+    var tangentComposition = getComposition(tangentArches, activeWave, activeShape.closed);
 
     gCodeData = [];
-    
+
     var lines = [];
     for (var c = 0; c < tangentComposition.length; c++) {
         var printLine = [];
@@ -233,4 +233,71 @@ function findLineIntersection(l1P, l1Vd, l2P, l2Vd) {
             l2P.x + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.x) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y),
             l2P.y + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.y) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y)
             );
+}
+
+function test() {
+    var point3D = [0, 0, 0];
+
+    var points = [];
+
+    var scale = 5;
+
+    for (var c = 0; c < 100; c++) {
+        points.push([(Math.sin(c) + c / 3) * 4 - Math.cos(c) * 4, Math.sin(c) * 10, Math.cos(c) * 10]);
+    }
+
+
+    //lbr will be a macro to print a line Break
+    var lBr = "\r\n";
+    var fileData = [];
+
+    var initialHeight = Number(document.getElementById('initialHeight').value);
+    var layerHeight = Number(document.getElementById('layerHeight').value);
+    var zTravelHeight = Number(document.getElementById('zTravelHeight').value);
+    var matDiameter = Number(document.getElementById('matDiameter').value);
+    var nozzDiameter = Number(document.getElementById('nozzDiameter').value);
+    var feedrateTravel = Number(document.getElementById('feedrateTravel').value);
+    var feedratePrinting = Number(document.getElementById('feedratePrinting').value);
+    var extruderRetraction = Number(document.getElementById('extruderRetraction').value);
+    var extruderFeedrate = Number(document.getElementById('extruderFeedrate').value);
+    var buildUpPressExtrusion = Number(document.getElementById('buildUpPressExtrusion').value);
+    var releasePressExtrusion = Number(document.getElementById('releasePressExtrusion').value);
+
+    var zHeight = initialHeight;
+    var extrusion = 0;
+
+    fileData.push(";------- Start printing ----" + lBr);
+    fileData.push(";---Homing all axis" + lBr);
+    fileData.push("G28" + lBr);
+    fileData.push(";---Reset extruder value" + lBr);
+    fileData.push("G92 E0" + lBr);
+
+    //fileData.push(";---Move to first point" + lBr);
+    fileData.push("G1 X" + roundNumber(points[0][0]) + " Y" + roundNumber(points[0][1]) + " Z" + roundNumber(points[0][2]) + " F" + feedrateTravel + lBr);
+
+    //fileData.push(";---Build up pressure" + lBr);
+    fileData.push("G1 E" + buildUpPressExtrusion + " F" + extruderFeedrate + lBr);
+    fileData.push("G92 E0" + lBr);
+
+    for (var a = 1; a < points.length; a++) {
+
+        var dist = Math.sqrt(Math.pow(points[a][0] - points[a - 1][0], 2) + Math.pow(points[a][0] - points[a - 1][1], 2) + Math.pow(points[a][0] - points[a - 1][2], 2));
+
+        var deltaExtrusion = (Math.PI * (nozzDiameter * nozzDiameter) * dist) / (Math.PI * (matDiameter * matDiameter));
+        extrusion += deltaExtrusion;
+
+        fileData.push("G1 X" + roundNumber(points[a][0]) + " Y" + roundNumber(points[a][1]) + " Z" + roundNumber(points[a][2]) + " E" + roundNumber(extrusion) + " F" + feedratePrinting + lBr);
+    }
+
+    fileData.push(";---Done printing" + lBr + lBr);
+    fileData.push(";---Releasing pressure" + lBr);
+    extrusion -= buildUpPressExtrusion;
+    fileData.push("G1 E" + roundNumber(extrusion) + " F" + extruderFeedrate + lBr);
+    fileData.push(";---finishing" + lBr);
+    fileData.push("G28" + lBr);
+    fileData.push("M84" + lBr);
+
+
+    var blob = new Blob(fileData, {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "testFile.gcode");
 }
