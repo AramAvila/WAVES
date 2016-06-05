@@ -73,6 +73,8 @@ $(document).ready(function () {
             });
             img.appendTo($("#shapeImageContainer"));
         });
+        
+        console.log(json);
 
         jsonLoaded(json);
 
@@ -88,6 +90,7 @@ $(document).ready(function () {
     $("#waveImageContainer").on("click", function (event) {
         activeWave = waveList.get($(event.target).attr("id")) || activeWave;
         $("#waveSelector").css("background-image", "url(" + activeWave.previewImage + ")");
+        updateWaveSettings();
         updatePrevis();
     });
 
@@ -97,7 +100,15 @@ $(document).ready(function () {
     $("#shapeImageContainer").on("click", function (event) {
         activeShape = shapeList.get($(event.target).attr("id")) || activeShape;
         $("#shapeSelector").css("background-image", "url(" + activeShape.previewImage + ")");
+        updateShapeSettings();
         updatePrevis();
+    });
+
+    $("#settings").on("click", function () {
+        $("#additionalOptions").slideToggle("slow");
+        $('html, body').animate({
+            scrollTop: $("#additionalOptions").offset().top
+        }, 500);
     });
 
 
@@ -142,7 +153,7 @@ $(document).ready(function () {
         }
         e.preventDefault();
     });
-    
+
     $("#print").on("click", function (event) {
         updateAddSettings();
         saveGcode();
@@ -158,7 +169,7 @@ $(document).ready(function () {
  * this function. It detects wich type will be used.
  * 
  * @param {type} eventName
- * @returns {String|Element|Boolean|isEventSupported.el}
+ * @returns {Boolean}
  */
 function isEventSupported(eventName) {
     var el = document.createElement('div');
@@ -190,4 +201,12 @@ function jsonLoaded(json) {
 
 function updatePrevis() {
     updateCanvas(activeShape, activeWave);
+}
+
+function updateShapeSettings(){
+    
+}
+
+function updateWaveSettings(){
+    
 }

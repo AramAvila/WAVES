@@ -198,22 +198,22 @@ function getOpenTangents(activeShape, turnRadius) {
     return tangentArches;
 }
 
-function getComposition(tangentComposition, shape) {
-    
+function getComposition(tangentComposition, wave, closed) {
+
     var perimeter = 0;
     for (var i = 0; i < tangentComposition.length; i++) {
         perimeter += tangentComposition[i].size();
     }
 
-    var optimalNumber = Math.round(perimeter / shape.optimalSize);
+    var optimalNumber = Math.round(perimeter / wave.optimalSize);
 
     var waveLength = perimeter / optimalNumber;
 
-    var totalSegments = optimalNumber * shape.points.length;
+    var totalSegments = optimalNumber * wave.points.length;
 
     var waveHeigth = [waveLength];
 
-    if (shape.symmetrical) {
+    if (wave.symmetrical) {
         waveHeigth.push(-waveLength);
     }
 
@@ -231,12 +231,12 @@ function getComposition(tangentComposition, shape) {
 
         for (var i = 0; i < segmentedShape.length - 1; i++) {
 
-            var p1 = new Coord(segmentedShape[i].x, segmentedShape[i].y);
-            var p2 = new Coord(segmentedShape[i + 1].x, segmentedShape[i + 1].y);
+            var p1 = segmentedShape[i];
+            var p2 = segmentedShape[i + 1];
             var vec = new Vector(p1, p2);
 
             var norm = vec.rotate(Math.PI / 2);
-            var pointsInSegment = shape.points[p];
+            var pointsInSegment = wave.points[p];
 
             for (var c = 0; c < pointsInSegment.length; c++) {
                 if (pointsInSegment[c] !== 'b') {
@@ -246,15 +246,33 @@ function getComposition(tangentComposition, shape) {
                 }
             }
 
-            if (p < shape.points.length - 1) {
+            if (p < wave.points.length - 1) {
                 p++;
             } else {
                 p = 0;
             }
         }
 
+        if (closed) {
+            console.log("closed");
+            var p1 = segmentedShape[segmentedShape.length - 1];
+            var p2 = segmentedShape[0];
+            var vec = new Vector(p1, p2);
+
+            var norm = vec.rotate(Math.PI / 2);
+            var pointsInSegment = wave.points[p];
+
+            for (var c = 0; c < pointsInSegment.length; c++) {
+                if (pointsInSegment[c] !== 'b') {
+                    shapedWave.push(norm.scale(pointsInSegment[c] * waveHeigth[a]).sum(p2));
+                } else {
+                    shapedWave.push('b');
+                }
+            }
+        }
+
         linesToDraw.push(shapedWave);
     }
-    
+
     return linesToDraw;
 }
