@@ -60,7 +60,8 @@ body{
     background-color:rgba(0, 0, 0, 0.5);
 }
 
-#editor{
+#editors{
+    float: none;
     width: 100%;
     height: 400px;
     border-width: 1px;
@@ -69,8 +70,26 @@ body{
     margin-bottom: 10px;
 }
 
+#shapeEditor{
+    float:left;
+}
+
+#waveEditor{
+    float:right;
+}
+
+#waveSettings, #shapeSettings{
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 250px;
+    list-style-type: none;
+    font-family: 'Noto Sans', sans-serif;
+}
+
 #buttonsDiv{
-    background-color: gray;
+    top: 500px;
     width: 50%;
     margin: auto;
     margin-bottom: 20px;
@@ -84,4 +103,25 @@ body{
 
 #print{
     float:right
+}
+
+#additionalOptions{
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 250px;
+    list-style-type: none;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+#additionalOptions ul li{
+    list-style-type: none;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+#additionalOptions li > input{
+    font-family: 'Noto Sans', sans-serif;
+    float:left;
 }
