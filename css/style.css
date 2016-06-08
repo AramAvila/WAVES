@@ -78,12 +78,17 @@ body{
     float:right;
 }
 
+#waveSettings, #shapeSettings ul{
+    margin-top: 20px;
+    padding-top: 5px;
+}
+
 #waveSettings, #shapeSettings{
-    margin-left: auto;
-    margin-right: auto;
+    margin:auto;
+    padding:0;
     left: 0;
     right: 0;
-    width: 250px;
+    width: 80%;
     list-style-type: none;
     font-family: 'Noto Sans', sans-serif;
 }
