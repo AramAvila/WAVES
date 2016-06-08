@@ -1,21 +1,3 @@
-var Wave = function () {
-    name = "";
-    description = "";
-    previewImage = "";
-    symmetrical = false;
-    points = [];
-    minTurn = 0;
-    optimalSize = 0;
-};
-
-var Shape = function () {
-    name = "";
-    description = "";
-    previewImage = "";
-    closed = false;
-    points = [];
-};
-
 var waveList = new Map();
 var shapeList = new Map();
 
@@ -41,9 +23,37 @@ $(document).ready(function () {
             wave.description = json.wavesData[index].description;
             wave.previewImage = json.wavesData[index].imageSrc;
             wave.symmetrical = json.wavesData[index].symmetrical;
-            wave.points = json.wavesData[index].points;
+
+            var segments = json.wavesData[index].segments;
+            var parsedSegs = [];
+            for (var s = 0; s < segments.length; s++) {
+
+                var seg = new Segment();
+                seg.size = segments[s][0];
+                seg.points = segments[s][1];
+
+                parsedSegs.push(seg);
+            }
+            wave.segments = parsedSegs;
+
+
+            var ranges = json.wavesData[index].modifierRanges;
+            var rangeMap = new Map();
+            var valMap = new Map();
+
+            for (var r = 0; r < ranges.length; r++) {
+                rangeMap.set(ranges[r][0], ranges[r][1]);
+
+                var min = ranges[r][1][0];
+                var max = ranges[r][1][1];
+                var dist = (Math.random() * (max - min)) + min;
+
+                valMap.set(ranges[r][0], dist);
+            }
+            wave.modRanges = rangeMap;
+            wave.currentValues = valMap;
+
             wave.minTurn = json.wavesData[index].minTurn;
-            wave.optimalSize = json.wavesData[index].optimalSize;
 
             waveList.set(wave.name, wave);
 
@@ -73,8 +83,6 @@ $(document).ready(function () {
             });
             img.appendTo($("#shapeImageContainer"));
         });
-        
-        console.log(json);
 
         jsonLoaded(json);
 
@@ -90,7 +98,7 @@ $(document).ready(function () {
     $("#waveImageContainer").on("click", function (event) {
         activeWave = waveList.get($(event.target).attr("id")) || activeWave;
         $("#waveSelector").css("background-image", "url(" + activeWave.previewImage + ")");
-        updateWaveSettings();
+        updateWaveSettings(activeWave);
         updatePrevis();
     });
 
@@ -203,10 +211,59 @@ function updatePrevis() {
     updateCanvas(activeShape, activeWave);
 }
 
-function updateShapeSettings(){
-    
+function updateShapeSettings(shape) {
 }
 
-function updateWaveSettings(){
-    
+function updateWaveSettings(wave) {
+
+    $("#waveSettings").empty();
+
+    wave.currentValues.forEach(function (value, key) {
+        var li = $('<li />');
+        var div = $('<div />', {
+            id: key,
+            text: roundNumber(value)
+        });
+
+        $(div).css("background-color", "gray");
+        $(div).css("padding", "1%");
+        $(div).css("margin-top", "2%");
+        $(div).css("width", "20%");
+
+        var ranges = activeWave.modRanges.get(key);
+
+        $(div).draggable({
+            axis: 'x',
+            containment: "parent",
+            drag: function () {
+                var thisLeft = $(this).position().left;
+                var parentLeft = $(this).parent().position().left;
+                var thisWidth = $(this).outerWidth();
+                var parentWidth = $(this).parent().outerWidth();
+
+                var moveRange = parentWidth - thisWidth;
+                var currentPos = thisLeft - parentLeft;
+
+                var currRange = (-currentPos * ranges[0] + moveRange * ranges[0] + currentPos * ranges[1]) / moveRange;
+
+                $(this).text(roundNumber(currRange));
+
+                activeWave.currentValues.set($(this).attr('id'), currRange);
+                updatePrevis();
+            }
+        });
+
+        li.append(div);
+        li.appendTo($("#waveSettings"));
+
+        var thisWidth = $(div).outerWidth();
+        var parentWidth = $(div).parent().outerWidth();
+
+        var moveRange = parentWidth - thisWidth;
+        var currentRange = value;
+
+        var currRange = (-currentRange * moveRange + moveRange * ranges[0]) / (ranges[0] - ranges[1]);
+        $(div).css("left", currRange);
+
+    });
 }

@@ -47,61 +47,59 @@ function saveGcode() {
 
     for (var z = 0; z < currentData.layers; z++) {
 
-        for (var t = 0; t < gCodeData.length; t++) {
+        //fileData.push(";---Move to first point" + lBr);
+        fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
 
-            //fileData.push(";---Move to first point" + lBr);
-            fileData.push("G1 X" + roundNumber(gCodeData[t][0].start.x) + " Y" + roundNumber(gCodeData[t][0].start.y) + " Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
+        //fileData.push(";---Build up pressure" + lBr);
+        fileData.push("G1 E" + currentData.buildUpPressExtrusion + " F" + currentData.extruderFeedrate + lBr);
+        fileData.push("G92 E0" + lBr);
+        for (var c = 0; c < gCodeData.length; c++) {
 
-            //fileData.push(";---Build up pressure" + lBr);
-            fileData.push("G1 E" + currentData.buildUpPressExtrusion + " F" + currentData.extruderFeedrate + lBr);
-            fileData.push("G92 E0" + lBr);
-            for (var c = 0; c < gCodeData[t].length; c++) {
+            var deltaExtrusion = (Math.PI * (currentData.nozzDiameter * currentData.nozzDiameter) * gCodeData[c].size()) / (Math.PI * (currentData.matDiameter * currentData.matDiameter));
+            extrusion += deltaExtrusion;
 
-                var deltaExtrusion = (Math.PI * (currentData.nozzDiameter * currentData.nozzDiameter) * gCodeData[t][c].size()) / (Math.PI * (currentData.matDiameter * currentData.matDiameter));
-                extrusion += deltaExtrusion;
+            //fileData.push(";---Delta extrusion for next line: " + roundNumber(deltaExtrusion) + lBr);
+            //fileData.push(";---Printing move" + lBr);
+            fileData.push("G1 X" + roundNumber(gCodeData[c].end.x) + " Y" + roundNumber(gCodeData[c].end.y) + " E" + roundNumber(extrusion) + " F" + currentData.feedratePrinting + lBr);
 
-                //fileData.push(";---Delta extrusion for next line: " + roundNumber(deltaExtrusion) + lBr);
-                //fileData.push(";---Printing move" + lBr);
-                fileData.push("G1 X" + roundNumber(gCodeData[t][c].end.x) + " Y" + roundNumber(gCodeData[t][c].end.y) + " E" + roundNumber(extrusion) + " F" + currentData.feedratePrinting + lBr);
-
-                if (c + 1 < gCodeData[t].length) {//if it's not the last line we will move the extruder to the next line starting point
-                    //fileData.push(";---Moving to next line start" + lBr);
-
-                    if (gCodeData[t][c].end.distance(gCodeData[t][c + 1].start) > 2) { //if the next point is not farther away than 2mm, the extrusor will not move.
-                        extrusion -= currentData.extruderRetraction;
-                        fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
-
-                        zHeight += currentData.zTravelHeight;
-                        fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
-                        fileData.push("G1 X" + roundNumber(gCodeData[t][c + 1].start.x) + " Y" + roundNumber(gCodeData[t][c + 1].start.y) + " F" + currentData.feedrateTravel + lBr);
-
-                        zHeight -= currentData.zTravelHeight;
-                        fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
-
-                        extrusion += currentData.extruderRetraction;
-                        fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
-                    }
-                }
-            }
-            zHeight += currentData.layerHeight;
-            if (z !== currentData.layers) {//if it's not the last layer, we will have to move
+            if (c + 1 < gCodeData.length) {//if it's not the last line we will move the extruder to the next line starting point
                 //fileData.push(";---Moving to next line start" + lBr);
 
-                extrusion -= currentData.extruderRetraction;
-                fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
+                if (gCodeData[c].end.distance(gCodeData[c + 1].start) > 2) { //if the next point is not farther away than 2mm, the extrusor will not move.
+                    extrusion -= currentData.extruderRetraction;
+                    fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
 
-                zHeight += currentData.zTravelHeight;
-                fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
-                fileData.push("G1 X" + roundNumber(gCodeData[t][0].start.x) + " Y" + roundNumber(gCodeData[t][0].start.y) + " F" + currentData.feedrateTravel + lBr);
+                    zHeight += currentData.zTravelHeight;
+                    fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
+                    fileData.push("G1 X" + roundNumber(gCodeData[c + 1].start.x) + " Y" + roundNumber(gCodeData[c + 1].start.y) + " F" + currentData.feedrateTravel + lBr);
 
-                zHeight -= currentData.zTravelHeight;
-                fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
+                    zHeight -= currentData.zTravelHeight;
+                    fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
 
-                extrusion += currentData.extruderRetraction;
-                fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
+                    extrusion += currentData.extruderRetraction;
+                    fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
+                }
             }
         }
+        zHeight += currentData.layerHeight;
+        if (z !== currentData.layers) {//if it's not the last layer, we will have to move
+            //fileData.push(";---Moving to next line start" + lBr);
+
+            extrusion -= currentData.extruderRetraction;
+            fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
+
+            zHeight += currentData.zTravelHeight;
+            fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
+            fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " F" + currentData.feedrateTravel + lBr);
+
+            zHeight -= currentData.zTravelHeight;
+            fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
+
+            extrusion += currentData.extruderRetraction;
+            fileData.push("G1 E" + roundNumber(extrusion) + " F" + currentData.extruderFeedrate + lBr);
+        }
     }
+
 
     fileData.push(";---Done printing" + lBr + lBr);
     fileData.push(";---Releasing pressure" + lBr);
