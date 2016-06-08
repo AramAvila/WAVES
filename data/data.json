@@ -4,72 +4,82 @@
         "description": "A simple straight line",
         "imageSrc": "img/line.jpg",
         "symmetrical": false,
-        "points": [[0],[0]],
-        "minTurn": 0.05,
-        "optimalSize": 2
+        "segments": [[1,[0]],[1,[0]]],
+        "modifierRanges":  [],
+        "minTurn": 10
     },
     {
         "name": "cross",
         "description": "A cross line",
         "imageSrc": "img/cross.jpg",
         "symmetrical": true,
-        "points": [[0],[0.1], [0.2],[0.3],[0.4],[0.5],[0.4],[0.3],[0.2],[0.1],[0],[-0.1],[-0.2],[-0.3],[-0.4],[-0.5],[-0.4],[-0.3],[-0.2],[-0.1]],
-        "minTurn": 0.1,
-        "optimalSize": 10
+        "segments": [[2,[0]],[2,[2]],[2,[4]],[2,[6]],[2,[8]],[2,[10]],[2,[8]],[2,[6]],[2,[4]],[2,[2]],[2,[0]],[2,[-2]],[2,[-4]],[2,[-6]],[2,[-8]],[2,[-10]],[2,[-8]],[2,[-6]],[2,[-4]],[2,[-2]]],
+        "modifierRanges":  [],
+        "minTurn": 20
     },
     {
         "name": "snake",
         "description": "does S's",
         "imageSrc": "img/serp.jpg",
         "symmetrical": false,
-        "points": [[0.5,-0.5],[-0.5,0],[0,0.5]],
-        "minTurn": 0.1,
-        "optimalSize": 3
+        "segments": [["sa",["pa","pb"]],["sb",["pb",0]],[1,[0,"pa"]]],
+        "modifierRanges":  [["pa", [5,15]],
+                            ["pb", [-5,-15]],
+                            ["sa", [2,10]],
+                            ["sb", [2,10]]],
+        "minTurn": 20
     },
     {
-        "name": "snake",
+        "name": "snake2",
         "description": "does S's",
         "imageSrc": "img/serp.jpg",
         "symmetrical": false,
-        "points": [[0.5,-0.5],[-0.5,0.5]],
-        "minTurn": 0.1,
-        "optimalSize": 3
+        "segments": [["sa", ["pa", "pb"]], ["sb",["pb","pa"]]],
+        "modifierRanges":  [["pa", [5,15]],
+                            ["pb", [-5,-15]],
+                            ["sa", [2,10]],
+                            ["sb", [2,10]]],
+        "minTurn": 20
     },
     {
         "name": "curve",
         "description": "Description for cat6",
         "imageSrc": "img/curve.jpg",
         "symmetrical": true,
-        "points": [[0.5],[0.48],[0.45],[0.4],[0.35],[0.3],[0.2],[0.1],[0],[-0.2],[-0.5],[-0.2],[0],[0.1],[0.2],[0.3],[0.35],[0.4],[0.45],[0.48],[0.5]],
-        "minTurn": 0.1,
-        "optimalSize": 15
+        "segments": [[1,[0.5]],[1,[0.48]],[1,[0.45]],[1,[0.4]],[1,[0.35]],[1,[0.3]],[1,[0.2]],[1,[0.1]],[1,[0]],[1,[-0.2]],[1,[-0.5]],[1,[-0.2]],[1,[0]],[1,[0.1]],[1,[0.2]],[1,[0.3]],[1,[0.35]],[1,[0.4]],[1,[0.45]],[1,[0.48]],[1,[0.5]]],
+        "minTurn": 20,
+        "modifierRanges": []
     },
     {
         "name": "cross2",
         "description": "A cross line",
         "imageSrc": "img/cross.jpg",
         "symmetrical": false,
-        "points": [[0],[0.5, "b"], [0],[-0.5]],
-        "minTurn": 0.1,
-        "optimalSize": 5
+        "segments": [[2, [0]],["sa",["pa", "b"]], ["sa", [0]],[2, ["pb"]]],
+        "modifierRanges":  [["pa", [5,15]],
+                            ["pb", [-5,-15]],
+                            ["sa", [2,10]]],
+        "minTurn": 20
     },
     {
         "name": "updwn",
         "description": "Description for dog1",
         "imageSrc": "img/updwn.jpg",
         "symmetrical": false,
-        "points": [[0],[0.5],[0],[-0.5]],
-        "minTurn": 0.08,
-        "optimalSize": 5
+        "segments": [["sa", [0]],["sa", ["pa"]],["sa", [0]],["sa", ["pb"]]],
+        "minTurn": 10,
+        "modifierRanges":  [["pa", [5,15]],
+                            ["pb", [-5,-15]],
+                            ["sa", [2,10]]]
     },
     {
         "name": "discLine",
         "description": "Description for dog1",
         "imageSrc": "img/line.jpg",
         "symmetrical": false,
-        "points": [[0],[0, "b"],[0],[0]],
-        "minTurn": 0.08,
-        "optimalSize": 5
+        "segments": [[2,[0]],[2,[0, "b"]],[2,[0]],[2,[0]]],
+        "minTurn": 10,
+        "modifierRanges": []
     }
 ],
 "shapesData" : [
@@ -114,5 +124,12 @@
         "imageSrc": "img/zigzag2.jpg",
         "closed": false,
         "points": [[0,0],[1,0.2],[0,0.4],[1,0.6],[0,0.8],[1,1]]
+    },
+    {
+        "name": "Bump",
+        "description": "Description for cat6",
+        "imageSrc": "img/zigzag2.jpg",
+        "closed": false,
+        "points": [[0,0],[0.5,1],[1,0]]
     }
 ]}
