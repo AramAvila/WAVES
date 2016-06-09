@@ -4,9 +4,11 @@
         "description": "A simple straight line",
         "imageSrc": "img/line.jpg",
         "symmetrical": false,
-        "segments": [[1,[0]],[1,[0]]],
-        "modifierRanges":  [],
-        "minTurn": 10
+        "segments": [["sa",[0]],["sb",[0]]],
+        "modifierRanges":  [["sa", [2,10]],
+                            ["sb", [2,10]],
+                            ["tr", [5,20]]],
+        "minTurn": "tr"
     },
     {
         "name": "cross",
@@ -46,9 +48,9 @@
         "description": "Description for cat6",
         "imageSrc": "img/curve.jpg",
         "symmetrical": true,
-        "segments": [[1,[0.5]],[1,[0.48]],[1,[0.45]],[1,[0.4]],[1,[0.35]],[1,[0.3]],[1,[0.2]],[1,[0.1]],[1,[0]],[1,[-0.2]],[1,[-0.5]],[1,[-0.2]],[1,[0]],[1,[0.1]],[1,[0.2]],[1,[0.3]],[1,[0.35]],[1,[0.4]],[1,[0.45]],[1,[0.48]],[1,[0.5]]],
+        "segments": [["sa",[10]],["sa",[9.6]],["sa",[9]],["sa",[8]],["sa",[7]],["sa",[6]],["sa",[4]],["sa",[2]],["sa",[0]],["sa",[-4]],["sa",[-10]]],
         "minTurn": 20,
-        "modifierRanges": []
+        "modifierRanges": [["sa", [1,5]]]
     },
     {
         "name": "cross2",
