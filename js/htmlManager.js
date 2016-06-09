@@ -91,6 +91,10 @@ $(document).ready(function () {
         console.error("getJSON failed, status: " + textStatus + ", error: " + error);
     });
 
+    $(window).resize(function () {
+        updateShapeSettings(activeShape);
+        updatePrevis();
+    });
 
     $("#waveSelector").on("click", function () {
         $("#waveImageContainer").slideToggle("slow");
@@ -108,7 +112,7 @@ $(document).ready(function () {
     $("#shapeImageContainer").on("click", function (event) {
         activeShape = shapeList.get($(event.target).attr("id")) || activeShape;
         $("#shapeSelector").css("background-image", "url(" + activeShape.previewImage + ")");
-        updateShapeSettings();
+        //updateShapeSettings();
         updatePrevis();
     });
 
@@ -204,6 +208,8 @@ function jsonLoaded(json) {
     $("#shapeSelector").css("background-image", "url(" + $(selectedShape).attr("src") + ")"); //random wave image added as background
     $("#shapeImageContainer").hide(); //the image selection is hidden
 
+    updateShapeSettings(activeShape);
+
     updatePrevis();
 }
 
@@ -212,6 +218,63 @@ function updatePrevis() {
 }
 
 function updateShapeSettings(shape) {
+
+    var li = $('<li />');
+    $(li).css("border", "1px");
+    $(li).css("border-style", "solid");
+    $(li).css("border-color", "black");
+    $(li).css("background-color", "lightgray");
+    $(li).css("margin-top", "1%");
+    $(li).css("border-radius", "5px");
+
+    var ranges = [20, 120];
+    var printSize = (Math.random() * (ranges[1] - ranges[0])) + ranges[0];
+
+    var div = $('<div />', {
+        id: "printSize",
+        text: roundNumber(printSize)
+    });
+
+    updateWaveSettings(activeWave);
+
+    $(div).css("background-color", "gray");
+    $(div).css("padding", "1%");
+    $(div).css("width", "20%");
+    $(div).css("border-radius", "5px");
+    $(div).css("text-align", "center");
+
+    $(div).draggable({
+        axis: 'x',
+        containment: "parent",
+        drag: function () {
+            var thisLeft = $(this).position().left;
+            var parentLeft = $(this).parent().position().left;
+            var thisWidth = $(this).outerWidth();
+            var parentWidth = $(this).parent().outerWidth();
+            var limit = ranges;
+
+            var moveRange = parentWidth - thisWidth;
+            var currentPos = thisLeft - parentLeft;
+
+            var currRange = (-currentPos * limit[0] + moveRange * limit[0] + currentPos * limit[1]) / moveRange;
+
+            $(this).text(roundNumber(currRange));
+
+            activeWave.currentValues.set($(this).attr('id'), currRange);
+            updatePrevis();
+        }
+    });
+
+    li.append(div);
+    li.appendTo($("#shapeSettings"));
+
+    var thisWidth = $(div).outerWidth();
+    var parentWidth = $(div).parent().outerWidth();
+
+    var moveRange = parentWidth - thisWidth;
+
+    var currRange = (-printSize * moveRange + moveRange * ranges[0]) / (ranges[0] - ranges[1]);
+    $(div).css("left", currRange);
 }
 
 function updateWaveSettings(wave) {
@@ -220,6 +283,14 @@ function updateWaveSettings(wave) {
 
     wave.currentValues.forEach(function (value, key) {
         var li = $('<li />');
+        $(li).css("border", "1px");
+        $(li).css("border-style", "solid");
+        $(li).css("border-color", "black");
+        $(li).css("background-color", "lightgray");
+        $(li).css("margin-top", "1%");
+        $(li).css("border-radius", "5px");
+
+
         var div = $('<div />', {
             id: key,
             text: roundNumber(value)
@@ -227,8 +298,9 @@ function updateWaveSettings(wave) {
 
         $(div).css("background-color", "gray");
         $(div).css("padding", "1%");
-        $(div).css("margin-top", "2%");
         $(div).css("width", "20%");
+        $(div).css("border-radius", "5px");
+        $(div).css("text-align", "center");
 
         var ranges = activeWave.modRanges.get(key);
 
@@ -240,11 +312,12 @@ function updateWaveSettings(wave) {
                 var parentLeft = $(this).parent().position().left;
                 var thisWidth = $(this).outerWidth();
                 var parentWidth = $(this).parent().outerWidth();
+                var limits = ranges;
 
                 var moveRange = parentWidth - thisWidth;
                 var currentPos = thisLeft - parentLeft;
 
-                var currRange = (-currentPos * ranges[0] + moveRange * ranges[0] + currentPos * ranges[1]) / moveRange;
+                var currRange = (-currentPos * limits[0] + moveRange * limits[0] + currentPos * limits[1]) / moveRange;
 
                 $(this).text(roundNumber(currRange));
 

@@ -47,11 +47,9 @@ function updateCanvas(activeShape, activeWave) {
     var points = [];
 
     //printSize is the size at wich the shape should be printed, (mm)
-    var printSize = 100;
+    var printSize = $("#printSize").text();
     for (var i = 0; i < activeShape.points.length; i++) {
-
         points.push(new Coord(activeShape.points[i][0], activeShape.points[i][1]).scale(printSize));
-
     }
 
     activeShape.activePoints = points;
@@ -59,15 +57,61 @@ function updateCanvas(activeShape, activeWave) {
     var canvasScale = 3;
     var canvasOrigin = new Coord(300, 100);
 
-    var tangentCompositon = getShapeTangents(activeShape, activeWave.minTurn);
+    var turnRad;
+    if (isNaN(activeWave.minTurn)) {
+        turnRad = activeWave.currentValues.get(activeWave.minTurn);
+    } else {
+        turnRad = activeWave.minTurn;
+    }
+
+    var tangentCompositon = getShapeTangents(activeShape, turnRad);
 
     var waveComposition = getComposition(tangentCompositon, activeWave, activeShape.closed);
 
-    gCodeData = [];
+    var max = new Coord(0, 0);
+    var min = new Coord(0, 0);
 
+    for (var i = 0; i < waveComposition.length - 1; i++) {
+
+        if (waveComposition[i].x > max.x) {
+            max.x = waveComposition[i].x;
+        }
+        if (waveComposition[i].y > max.y) {
+            max.y = waveComposition[i].y;
+        }
+
+        if (waveComposition[i].x < min.x) {
+            min.x = waveComposition[i].x;
+        }
+        if (waveComposition[i].y < min.y) {
+            min.y = waveComposition[i].y;
+        }
+    }
+
+    var canvasWidth = $("#preVis").width() * 0.8;
+    var canvasHeight = $("#preVis").height() * 0.8;
+    var canvasScaleX = canvasHeight / max.y;
+    var canvasScaleY = canvasWidth / max.x;
+
+    /*if (canvasScaleX > canvasScaleY) {
+        canvasScale = canvasScaleY;
+    } else {
+        canvasScale = canvasScaleX;
+    }
+
+    var startX = ($("#preVis").width() - canvasWidth) / 2;
+    var startY = -($("#preVis").height() - canvasHeight) / 2;
+    
+    canvasOrigin.x = startX;
+    canvasOrigin.y = startY;*/
+
+    var center = new Vector(min, max);
+    center = center.mult(0.5);
+
+    gCodeData = [];
     var lines = [];
     var printLine = [];
-
+    var color1 = true;
     for (var i = 0; i < waveComposition.length - 1; i++) {
 
         if (waveComposition[i] !== 'b' && waveComposition[i + 1] !== 'b') {
@@ -75,59 +119,24 @@ function updateCanvas(activeShape, activeWave) {
             var path = new paper.Path(
                     new paper.Point(waveComposition[i].x * canvasScale + canvasOrigin.x, waveComposition[i].y * canvasScale + canvasOrigin.y),
                     new paper.Point(waveComposition[i + 1].x * canvasScale + canvasOrigin.x, waveComposition[i + 1].y * canvasScale + canvasOrigin.y));
-            var color = new paper.Color(Math.random(), Math.random(), Math.random());
-            path.strokeWidth = 2;
-            path.strokeColor = color;
+
+            if (color1) {
+                path.strokeColor = new paper.Color("#B7A696");
+                color1 = false;
+            } else {
+                path.strokeColor = new paper.Color("#211E10");
+                color1 = true;
+            }
+
+            path.strokeWidth = 3;
             lines.push(path);
             printLine.push(line);
         }
     }
 
-    var max = new Coord(0, 0);
-    var min = new Coord(0, 0);
-
-    for (var i = 0; i < printLine.length - 1; i++) {
-
-        if (printLine[i].start.x > max.x) {
-            max.x = printLine[i].start.x;
-        }
-        if (printLine[i].start.y > max.y) {
-            max.y = printLine[i].start.y;
-        }
-
-        if (printLine[i].start.x < min.x) {
-            max.x = printLine[i].start.x;
-        }
-        if (printLine[i].start.y < min.y) {
-            max.y = printLine[i].start.y;
-        }
-
-        if (printLine[i].end.x > max.x) {
-            max.x = printLine[i].end.x;
-        }
-        if (printLine[i].end.y > max.y) {
-            max.y = printLine[i].end.y;
-        }
-
-        if (printLine[i].end.x < min.x) {
-            max.x = printLine[i].end.x;
-        }
-        if (printLine[i].end.y < min.y) {
-            max.y = printLine[i].end.y;
-        }
-    }
-
-    var center = new Vector(min, max);
-    console.log(min);
-    console.log(max);
-    console.log(center);
-    center = center.mult(0.5);
-    console.log(center);
-
     for (var i = 0; i < printLine.length; i++) {
         gCodeData.push(new Line(printLine[i].start.subs(center), printLine[i].end.subs(center)));
     }
-
 
     preVisLayer = new canvas[0].Layer({
         children: lines
@@ -135,15 +144,6 @@ function updateCanvas(activeShape, activeWave) {
 
     canvas[0].view.draw();
     canvas[1].view.draw();
-}
-
-
-function findLineIntersection(l1P, l1Vd, l2P, l2Vd) {
-
-    return new Coord(
-            l2P.x + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.x) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y),
-            l2P.y + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.y) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y)
-            );
 }
 
 function test() {

@@ -65,28 +65,28 @@ var Coord = function (x, y) {
 var Vector = function (start, end) {
 
     /*if (typeof end.y !== 'number') {
-        throw new VectorException(end.y);
-    }
-
-    if (typeof end.x !== 'number') {
-        throw new VectorException(end.x );
-    }
-
-    if (typeof start.x !== 'number') {
-        throw new VectorException(start.x);
-    }
-
-    if (typeof start.y !== 'number') {
-        throw new VectorException(start.y);
-    }
-
-    if (end.x === start.x && end.y === start.y) {
-        console.log(start);
-        console.log(end);
-        console.log("end.x === start.x && end.y === start.y");
-        console.log(end.x + "===" + start.x + "&&" + end.y + "===" + start.y);
-        throw new VectorException(0);
-    }*/
+     throw new VectorException(end.y);
+     }
+     
+     if (typeof end.x !== 'number') {
+     throw new VectorException(end.x );
+     }
+     
+     if (typeof start.x !== 'number') {
+     throw new VectorException(start.x);
+     }
+     
+     if (typeof start.y !== 'number') {
+     throw new VectorException(start.y);
+     }
+     
+     if (end.x === start.x && end.y === start.y) {
+     console.log(start);
+     console.log(end);
+     console.log("end.x === start.x && end.y === start.y");
+     console.log(end.x + "===" + start.x + "&&" + end.y + "===" + start.y);
+     throw new VectorException(0);
+     }*/
 
     this.x = end.x - start.x;
     this.y = end.y - start.y;
@@ -161,19 +161,9 @@ var Arch = function (start, center, end) {
         var angle = Math.acos((v1.x * v2.x + v1.y * v2.y) / (Math.sqrt(Math.pow(v1.x, 2) + Math.pow(v1.y, 2)) * Math.sqrt(Math.pow(v2.x, 2) + Math.pow(v2.y, 2))));
         var length = this.size();
 
-        var segmentSum = 0;
-        for (var a = 0; a < segmentList.length; a++) {
-            segmentSum += segmentList[a];
-        }
-
-        var rescaledSegments = [];
-        for (var a = 0; a < segmentList.length; a++) {
-            rescaledSegments.push(segmentList[a] * length / segmentSum);
-        }
-
         var rotations = [];
-        for (var a = 0; a < rescaledSegments.length; a++) {
-            rotations.push(rescaledSegments[a] * angle / length);
+        for (var a = 0; a < segmentList.length; a++) {
+            rotations.push(segmentList[a] * angle / length);
         }
 
         var test = new Vector(this.center, this.start).rotate(angle / 2);
@@ -189,19 +179,16 @@ var Arch = function (start, center, end) {
         }
 
         var fragments = [];
+        var rot = 0;
+        var vec = new Vector(this.center, this.start);
         if (inverse) {
-            var rot = 0;
-            var vec = new Vector(this.center, this.start);
             for (var i = 0; i < rotations.length; i++) {
                 rot += rotations[i];
                 fragments.push(vec.rotate(rot).sum(this.center));
             }
-
         } else {
-            var vec = new Vector(this.center, this.end);
-            var rot = 0;
-            for (var i = rotations.length - 1; i >= 0; i--) {
-                rot += rotations[i];
+            for (var i = 0; i < rotations.length; i++) {
+                rot -= rotations[i];
                 fragments.push(vec.rotate(rot).sum(this.center));
             }
         }
@@ -222,23 +209,14 @@ var Line = function (start, end) {
     };
     this.fragment = function (segmentList) {
 
-        var segmentsSize = 0;
-        for (var a = 0; a < segmentList.length; a++) {
-            segmentsSize += segmentList[a];
-        }
-        var rescaledSegments = [];
-        for (var a = 0; a < segmentList.length; a++) {
-            rescaledSegments.push(segmentList[a] * this.size() / segmentsSize);
-        }
-
         var vec = new Vector(this.start, this.end);
         vec.changeLength(1);
 
         var fragments = [];
         var dist = 0;
 
-        for (var i = 0; i < rescaledSegments.length; i++) {
-            dist += rescaledSegments[i];
+        for (var i = 0; i < segmentList.length; i++) {
+            dist += segmentList[i];
             fragments.push(vec.mult(dist).sum(this.start));
         }
 

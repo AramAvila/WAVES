@@ -257,29 +257,39 @@ function getComposition(tangentComposition, wave, closed) {
 
     var segmentedShape = [];
 
-    for (var i = 0; i < tangentComposition.length; i++) {
+    var segmentList = [];
+    var segmentSum = 0;
+    var a = 0;
+    for (var i = 0; i < tangentComposition.length - 1; i++) {
         var segmentsPerPart = tangentComposition[i].size();
-        var segmentList = [];
-        var segmentSum = 0;
+        var done = false;
 
-        while (segmentSum < segmentsPerPart && totalSegments.length > 1) {
-            var a = totalSegments.pop();
-            segmentSum += a;
-            segmentList.push(a);
+        while (totalSegments.length > 0 && !done) {
+            a = totalSegments[0];
+            if ((segmentSum + a) < segmentsPerPart) {
+                segmentSum += a;
+                totalSegments.shift();
+                segmentList.push(a);
+            } else {
+                done = true;
+                segmentedShape = segmentedShape.concat(tangentComposition[i].fragment(segmentList));
+                a = (segmentSum + a) - segmentsPerPart;
+                segmentSum = a;
+                segmentList = [a];
+                totalSegments.shift();
+            }
         }
-        segmentedShape = segmentedShape.concat(tangentComposition[i].fragment(segmentList));
     }
+    totalSegments.unshift(a);
+    segmentedShape = segmentedShape.concat(tangentComposition[tangentComposition.length - 1].fragment(totalSegments));
 
     if (closed) {
-        segmentedShape.push(segmentedShape[0]);
-    } else {
-        segmentedShape.push(tangentComposition[tangentComposition.length - 1].end);
+        segmentedShape.push(segmentedShape[0], segmentedShape[1]);
     }
 
     var p = 0;
 
     var shapedWave = [];
-
 
     for (var i = 0; i < segmentedShape.length - 1; i++) {
 
@@ -314,5 +324,50 @@ function getComposition(tangentComposition, wave, closed) {
         }
     }
 
+    if (wave.symmetrical) {
+        p = 0;
+        shapedWave.push('b');
+        for (var i = 0; i < segmentedShape.length - 1; i++) {
+
+            var p1 = segmentedShape[i];
+            var p2 = segmentedShape[i + 1];
+
+            var vec = new Vector(p1, p2);
+
+            var norm = vec.rotate(Math.PI / 2);
+            norm.changeLength(1);
+
+            var segment = wave.segments[p];
+
+            for (var c = 0; c < segment.points.length; c++) {
+                if (segment.points[c] !== 'b') {
+                    var heigth = 0;
+                    if (isNaN(segment.points[c])) {
+                        heigth = -wave.currentValues.get(segment.points[c]);
+                    } else {
+                        heigth = -segment.points[c];
+                    }
+                    shapedWave.push(norm.mult(heigth).sum(p2));
+                } else {
+                    shapedWave.push('b');
+                }
+            }
+
+            if (p < wave.segments.length - 1) {
+                p++;
+            } else {
+                p = 0;
+            }
+        }
+    }
+
     return shapedWave;
+}
+
+function findLineIntersection(l1P, l1Vd, l2P, l2Vd) {
+
+    return new Coord(
+            l2P.x + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.x) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y),
+            l2P.y + ((l1P.y * l1Vd.x - l1P.x * l1Vd.y + l1Vd.y * l2P.x - l1Vd.x * l2P.y) * l2Vd.y) / (-l1Vd.y * l2Vd.x + l1Vd.x * l2Vd.y)
+            );
 }
