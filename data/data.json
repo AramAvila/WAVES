@@ -82,7 +82,61 @@
         "segments": [[2,[0]],[2,[0, "b"]],[2,[0]],[2,[0]]],
         "minTurn": 10,
         "modifierRanges": []
+    },
+    {
+        "name": "3dWaveTest",
+        "description": "Description for dog1",
+        "imageSrc": "img/cross.jpg",
+        "symmetrical": false,
+        "segments": [
+                    [10,[
+                    [-15,  0, 6],
+                    [0,   15, 3],
+                    [15,   0, 0],
+                    [10,  10, 3]
+                        ]
+                    ]
+                    ],
+        "minTurn": 10,
+        "modifierRanges": []
+    },    
+    {
+        "name": "3dWaveTest2",
+        "description": "Description for dog1",
+        "imageSrc": "img/line.jpg",
+        "symmetrical": false,
+        "segments": [
+                    [10,[
+                    [15, 15, 6],
+                    [30,  0, 3],
+                    [20,-10, 0],
+                    [10,  0, 3]
+                        ]
+                    ]
+                    ],
+        "minTurn": 10,
+        "modifierRanges": []
+    },
+    {
+        "name": "3dWaveTest3",
+        "description": "Description for dog1",
+        "imageSrc": "img/updwn.jpg",
+        "symmetrical": false,
+        "segments": [
+                    ["sa",[
+                    [15, "pa", 6],
+                    [30,  0, 3],
+                    [20,"pb", 0],
+                    [10,  0, 3]
+                        ]
+                    ]
+                    ],
+        "minTurn": 10,
+        "modifierRanges": [["pa", [5,15]],
+                            ["pb", [-5,-15]],
+                            ["sa", [2,20]]]
     }
+    
 ],
 "shapesData" : [
     {
