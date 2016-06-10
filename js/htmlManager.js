@@ -93,6 +93,7 @@ $(document).ready(function () {
 
     $(window).resize(function () {
         updateShapeSettings(activeShape);
+        updateWaveSettings(activeWave);
         updatePrevis();
     });
 
@@ -208,17 +209,6 @@ function jsonLoaded(json) {
     $("#shapeSelector").css("background-image", "url(" + $(selectedShape).attr("src") + ")"); //random wave image added as background
     $("#shapeImageContainer").hide(); //the image selection is hidden
 
-    updateShapeSettings(activeShape);
-
-    updatePrevis();
-}
-
-function updatePrevis() {
-    updateCanvas(activeShape, activeWave);
-}
-
-function updateShapeSettings(shape) {
-
     var li = $('<li />');
     $(li).css("border", "1px");
     $(li).css("border-style", "solid");
@@ -234,8 +224,6 @@ function updateShapeSettings(shape) {
         id: "printSize",
         text: roundNumber(printSize)
     });
-
-    updateWaveSettings(activeWave);
 
     $(div).css("background-color", "gray");
     $(div).css("padding", "1%");
@@ -268,13 +256,30 @@ function updateShapeSettings(shape) {
     li.append(div);
     li.appendTo($("#shapeSettings"));
 
+    updateShapeSettings(activeShape);
+
+    updatePrevis();
+}
+
+function updatePrevis() {
+    updateCanvas(activeShape, activeWave);
+}
+
+function updateShapeSettings(shape) {
+
+    var ranges = [20, 120];
+
+    var div = $("#printSize");
+
     var thisWidth = $(div).outerWidth();
     var parentWidth = $(div).parent().outerWidth();
 
     var moveRange = parentWidth - thisWidth;
+    var currentRange = $(div).val();
 
-    var currRange = (-printSize * moveRange + moveRange * ranges[0]) / (ranges[0] - ranges[1]);
-    $(div).css("left", currRange);
+    var currRange = (-currentRange * moveRange + moveRange * ranges[0]) / (ranges[0] - ranges[1]);
+    $(div).css("left", -currRange);
+
 }
 
 function updateWaveSettings(wave) {
@@ -307,17 +312,17 @@ function updateWaveSettings(wave) {
         $(div).draggable({
             axis: 'x',
             containment: "parent",
+            cursor: "grabbing",
             drag: function () {
                 var thisLeft = $(this).position().left;
                 var parentLeft = $(this).parent().position().left;
                 var thisWidth = $(this).outerWidth();
                 var parentWidth = $(this).parent().outerWidth();
-                var limits = ranges;
 
                 var moveRange = parentWidth - thisWidth;
                 var currentPos = thisLeft - parentLeft;
 
-                var currRange = (-currentPos * limits[0] + moveRange * limits[0] + currentPos * limits[1]) / moveRange;
+                var currRange = (-currentPos * ranges[0] + moveRange * ranges[0] + currentPos * ranges[1]) / moveRange;
 
                 $(this).text(roundNumber(currRange));
 
@@ -325,6 +330,8 @@ function updateWaveSettings(wave) {
                 updatePrevis();
             }
         });
+
+        $(div).css('cursor', 'grab');
 
         li.append(div);
         li.appendTo($("#waveSettings"));

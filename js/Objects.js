@@ -20,7 +20,7 @@ var VectorException = function (object) {
     };
 };
 
-var Coord = function (x, y) {
+var Coord = function (x, y, z) {
 
     if (typeof x !== 'number') {
         throw new NumberException(x);
@@ -32,13 +32,15 @@ var Coord = function (x, y) {
 
     this.x = x;
     this.y = y;
+    this.z = z || 0;
     this.distance = function (point2) {
         if (isNaN(point2.x) || isNaN(point2.y)) {
             console.error("Distance is NAN!" + point2);
         }
         var x = point2.x - this.x;
         var y = point2.y - this.y;
-        var dist = Math.sqrt((x * x) + (y * y));
+        var z = point2.z - this.z;
+        var dist = Math.sqrt((x * x) + (y * y) + (z * z));
         return dist;
     };
 
@@ -46,19 +48,19 @@ var Coord = function (x, y) {
         if (isNaN(coord2.x) || isNaN(coord2.y)) {
             console.error("Coord sum is NAN!" + coord2);
         }
-        return new Coord(this.x + coord2.x, this.y + coord2.y);
+        return new Coord(this.x + coord2.x, this.y + coord2.y, this.z + coord2.z);
     };
     this.subs = function (coord2) {
         if (isNaN(coord2.x) || isNaN(coord2.y)) {
             console.error("Coord subs is NAN!" + coord2);
         }
-        return new Coord(coord2.x - this.x, coord2.y - this.y);
+        return new Coord(coord2.x - this.x, coord2.y - this.y, coord2.z - this.z);
     };
     this.scale = function (scale) {
         if (isNaN(scale)) {
             console.error("Coord scale is NAN!" + scale);
         }
-        return new Coord(this.x * scale, this.y * scale);
+        return new Coord(this.x * scale, this.y * scale, this.z * scale);
     };
 };
 
@@ -90,9 +92,10 @@ var Vector = function (start, end) {
 
     this.x = end.x - start.x;
     this.y = end.y - start.y;
+    this.z = end.z - start.z;
 
     this.length = function () {
-        return Math.sqrt((this.x * this.x) + (this.y * this.y));
+        return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z));
     };
 
     this.rotate = function (angle) {
@@ -110,23 +113,24 @@ var Vector = function (start, end) {
         if (isNaN(coord.x) || isNaN(coord.y)) {
             console.error("Vector sum is NAN! " + coord);
         }
-        return new Coord(this.x + coord.x, this.y + coord.y); //moving a vector from the origin turns it in to a coordinate.
+        return new Coord(this.x + coord.x, this.y + coord.y, this.z + coord.z); //moving a vector from the origin turns it in to a coordinate.
     };
 
     this.changeLength = function (newLength) {
         if (isNaN(newLength)) {
             console.error("Vector change length is NAN! " + newLength);
         }
-        var k = newLength / Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+        var k = newLength / Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)+ Math.pow(this.z, 2));
         this.x = k * this.x;
         this.y = k * this.y;
+        this.z = k * this.z;
     };
 
     this.mult = function (n) {
         if (isNaN(n)) {
             console.error("Vector mult is NAN! " + n);
         }
-        return new Vector(new Coord(0, 0), new Coord(this.x * n, this.y * n));
+        return new Vector(new Coord(0, 0), new Coord(this.x * n, this.y * n, this.z * n));
     };
 };
 

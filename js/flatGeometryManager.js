@@ -255,7 +255,7 @@ function getComposition(tangentComposition, wave, closed) {
         totalSegments = totalSegments.concat(waveSegs);
     }
 
-    var segmentedShape = [];
+    var fragmentedShape = [];
 
     var segmentList = [];
     var segmentSum = 0;
@@ -272,7 +272,7 @@ function getComposition(tangentComposition, wave, closed) {
                 segmentList.push(a);
             } else {
                 done = true;
-                segmentedShape = segmentedShape.concat(tangentComposition[i].fragment(segmentList));
+                fragmentedShape = fragmentedShape.concat(tangentComposition[i].fragment(segmentList));
                 a = (segmentSum + a) - segmentsPerPart;
                 segmentSum = a;
                 segmentList = [a];
@@ -281,37 +281,63 @@ function getComposition(tangentComposition, wave, closed) {
         }
     }
     totalSegments.unshift(a);
-    segmentedShape = segmentedShape.concat(tangentComposition[tangentComposition.length - 1].fragment(totalSegments));
+    fragmentedShape = fragmentedShape.concat(tangentComposition[tangentComposition.length - 1].fragment(totalSegments));
 
     if (closed) {
-        segmentedShape.push(segmentedShape[0], segmentedShape[1]);
+        fragmentedShape.push(fragmentedShape[0], fragmentedShape[1]);
     }
 
     var p = 0;
 
     var shapedWave = [];
 
-    for (var i = 0; i < segmentedShape.length - 1; i++) {
+    for (var i = 0; i < fragmentedShape.length - 1; i++) {
 
-        var p1 = segmentedShape[i];
-        var p2 = segmentedShape[i + 1];
+        var p1 = fragmentedShape[i];
+        var p2 = fragmentedShape[i + 1];
 
         var vec = new Vector(p1, p2);
-
         var norm = vec.rotate(Math.PI / 2);
+        vec.changeLength(1);
         norm.changeLength(1);
 
         var segment = wave.segments[p];
 
         for (var c = 0; c < segment.points.length; c++) {
             if (segment.points[c] !== 'b') {
-                var heigth = 0;
-                if (isNaN(segment.points[c])) {
-                    heigth = wave.currentValues.get(segment.points[c]);
+                if (Array.isArray(segment.points[c])) {
+                    var dX, dY, dZ;
+                    if (isNaN(segment.points[c][0])) {
+                        dX = wave.currentValues.get(segment.points[c][0]);
+                    } else {
+                        dX = segment.points[c][0];
+                    }
+                    if (isNaN(segment.points[c][1])) {
+                        dY = wave.currentValues.get(segment.points[c][1]);
+                    } else {
+                        dY = segment.points[c][1];
+                    }
+                    if (isNaN(segment.points[c][2])) {
+                        dZ = wave.currentValues.get(segment.points[c][2]);
+                    } else {
+                        dZ = segment.points[c][2];
+                    }
+
+                    var vX = vec.mult(-dX);
+                    var vY = norm.mult(-dY);
+                    var vZ = new Coord(0, 0, -dZ);
+
+                    var point = vX.sum(vY.sum(vZ)).sum(p1);
+                    shapedWave.push(point);
                 } else {
-                    heigth = segment.points[c];
+                    var heigth = 0;
+                    if (isNaN(segment.points[c])) {
+                        heigth = wave.currentValues.get(segment.points[c]);
+                    } else {
+                        heigth = segment.points[c];
+                    }
+                    shapedWave.push(norm.mult(heigth).sum(p2));
                 }
-                shapedWave.push(norm.mult(heigth).sum(p2));
             } else {
                 shapedWave.push('b');
             }
@@ -323,43 +349,44 @@ function getComposition(tangentComposition, wave, closed) {
             p = 0;
         }
     }
+    console.log(point);
 
-    if (wave.symmetrical) {
-        p = 0;
-        shapedWave.push('b');
-        for (var i = 0; i < segmentedShape.length - 1; i++) {
-
-            var p1 = segmentedShape[i];
-            var p2 = segmentedShape[i + 1];
-
-            var vec = new Vector(p1, p2);
-
-            var norm = vec.rotate(Math.PI / 2);
-            norm.changeLength(1);
-
-            var segment = wave.segments[p];
-
-            for (var c = 0; c < segment.points.length; c++) {
-                if (segment.points[c] !== 'b') {
-                    var heigth = 0;
-                    if (isNaN(segment.points[c])) {
-                        heigth = -wave.currentValues.get(segment.points[c]);
-                    } else {
-                        heigth = -segment.points[c];
-                    }
-                    shapedWave.push(norm.mult(heigth).sum(p2));
-                } else {
-                    shapedWave.push('b');
-                }
-            }
-
-            if (p < wave.segments.length - 1) {
-                p++;
-            } else {
-                p = 0;
-            }
-        }
-    }
+    /*if (wave.symmetrical) {
+     p = 0;
+     shapedWave.push('b');
+     for (var i = 0; i < segmentedShape.length - 1; i++) {
+     
+     var p1 = segmentedShape[i];
+     var p2 = segmentedShape[i + 1];
+     
+     var vec = new Vector(p1, p2);
+     
+     var norm = vec.rotate(Math.PI / 2);
+     norm.changeLength(1);
+     
+     var segment = wave.segments[p];
+     
+     for (var c = 0; c < segment.points.length; c++) {
+     if (segment.points[c] !== 'b') {
+     var heigth = 0;
+     if (isNaN(segment.points[c])) {
+     heigth = -wave.currentValues.get(segment.points[c]);
+     } else {
+     heigth = -segment.points[c];
+     }
+     shapedWave.push(norm.mult(heigth).sum(p2));
+     } else {
+     shapedWave.push('b');
+     }
+     }
+     
+     if (p < wave.segments.length - 1) {
+     p++;
+     } else {
+     p = 0;
+     }
+     }
+     }*/
 
     return shapedWave;
 }

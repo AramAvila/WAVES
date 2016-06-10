@@ -48,7 +48,7 @@ function saveGcode() {
     for (var z = 0; z < currentData.layers; z++) {
 
         //fileData.push(";---Move to first point" + lBr);
-        fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
+        fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " Z" + roundNumber(gCodeData[0].start.z + zHeight) + " F" + currentData.feedrateTravel + lBr);
 
         //fileData.push(";---Build up pressure" + lBr);
         fileData.push("G1 E" + currentData.buildUpPressExtrusion + " F" + currentData.extruderFeedrate + lBr);
@@ -60,7 +60,7 @@ function saveGcode() {
 
             //fileData.push(";---Delta extrusion for next line: " + roundNumber(deltaExtrusion) + lBr);
             //fileData.push(";---Printing move" + lBr);
-            fileData.push("G1 X" + roundNumber(gCodeData[c].end.x) + " Y" + roundNumber(gCodeData[c].end.y) + " E" + roundNumber(extrusion) + " F" + currentData.feedratePrinting + lBr);
+            fileData.push("G1 X" + roundNumber(gCodeData[c].end.x) + " Y" + roundNumber(gCodeData[c].end.y) + " Z" + roundNumber(gCodeData[c].start.z + zHeight) + " E" + roundNumber(extrusion) + " F" + currentData.feedratePrinting + lBr);
 
             if (c + 1 < gCodeData.length) {//if it's not the last line we will move the extruder to the next line starting point
                 //fileData.push(";---Moving to next line start" + lBr);
@@ -71,7 +71,7 @@ function saveGcode() {
 
                     zHeight += currentData.zTravelHeight;
                     fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
-                    fileData.push("G1 X" + roundNumber(gCodeData[c + 1].start.x) + " Y" + roundNumber(gCodeData[c + 1].start.y) + " F" + currentData.feedrateTravel + lBr);
+                    fileData.push("G1 X" + roundNumber(gCodeData[c + 1].start.x) + " Y" + roundNumber(gCodeData[c + 1].start.y) + " Z" + roundNumber(gCodeData[c].start.z + zHeight) + " F" + currentData.feedrateTravel + lBr);
 
                     zHeight -= currentData.zTravelHeight;
                     fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
@@ -90,7 +90,7 @@ function saveGcode() {
 
             zHeight += currentData.zTravelHeight;
             fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);
-            fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " F" + currentData.feedrateTravel + lBr);
+            fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " Z" + roundNumber(gCodeData[0].start.z + zHeight) + " F" + currentData.feedrateTravel + lBr);
 
             zHeight -= currentData.zTravelHeight;
             fileData.push("G1 Z" + roundNumber(zHeight) + " F" + currentData.feedrateTravel + lBr);

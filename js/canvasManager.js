@@ -21,19 +21,11 @@ function setUpCanvas() {
 
 }
 
-/*var angle = Math.acos((v1[0] * v2[0] + v1[1] * v2[1]) / (Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2))));
- var color = new paper.Color(Math.random(), Math.random(), Math.random());
- var path = new paper.Path(new paper.Point(closerV1.x, closerV1.y), new paper.Point(closer1Corrected.x, closer1Corrected.y));
- path.strokeWidth = 2;
- path.strokeColor = color;
- lines.push(path);
- 
- var path = new paper.Path(new paper.Point(closerV2.x, closerV2.y), new paper.Point(closer2Corrected.x, closer2Corrected.y));
- path.strokeWidth = 2;
- path.strokeColor = color;
- lines.push(path);
- 
- 1 rad = 180/pi degrees*/
+/*
+ * var angle = Math.acos((v1[0] * v2[0] + v1[1] * v2[1]) / (Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2))));
+ * var color = new paper.Color(Math.random(), Math.random(), Math.random());
+ * 1 rad = 180/pi degrees
+ */
 
 function updateCanvas(activeShape, activeWave) {
 
