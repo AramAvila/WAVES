@@ -121,6 +121,7 @@ function roundNumber(n) {
 function updateAddSettings() {
 
     var addSettings = {
+        layers: Number(document.getElementById('layerNumber').value),
         initialHeight: Number(document.getElementById('initialHeight').value),
         layerHeight: Number(document.getElementById('layerHeight').value),
         zTravelHeight: Number(document.getElementById('zTravelHeight').value),
