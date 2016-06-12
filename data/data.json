@@ -184,8 +184,22 @@
     {
         "name": "Bump",
         "description": "Description for cat6",
-        "imageSrc": "img/zigzag2.jpg",
+        "imageSrc": "img/bump.jpg",
         "closed": false,
         "points": [[0,0],[0.5,1],[1,0]]
+    },
+    {
+        "name": "Rombe",
+        "description": "Description for cat6",
+        "imageSrc": "img/rombe.jpg",
+        "closed": true,
+        "points": [[0.5,0],[0,0.5],[0.5,1],[0,0.5]]
+    },
+    {
+        "name": "W",
+        "description": "Description for cat6",
+        "imageSrc": "img/W.jpg",
+        "closed": false,
+        "points": [[0,0.3],[0.16,0.7],[0.32,0],[0.5,1],[0.66,0],[0.82,0.7],[1,0.3]]
     }
 ]}
