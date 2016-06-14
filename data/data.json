@@ -32,16 +32,17 @@
         "minTurn": 20
     },
     {
-        "name": "snake2",
+        "name": "simpleSnake",
         "description": "does S's",
-        "imageSrc": "img/serp.jpg",
+        "imageSrc": "img/simpleSnake.jpg",
         "symmetrical": false,
         "segments": [["sa", ["pa", "pb"]], ["sb",["pb","pa"]]],
         "modifierRanges":  [["pa", [5,15]],
                             ["pb", [-5,-15]],
                             ["sa", [2,10]],
-                            ["sb", [2,10]]],
-        "minTurn": 20
+                            ["sb", [2,10]],
+                            ["tr", [2,20]]],
+        "minTurn": "tr"
     },
     {
         "name": "curve",
@@ -178,7 +179,7 @@
         "description": "Description for cat6",
         "imageSrc": "img/rombe.jpg",
         "closed": true,
-        "points": [[0.5,0],[0,0.5],[0.5,1],[0,0.5]]
+        "points": [[0,0.3],[0.5,0],[1,0.3],[0.5,0.6],[0,0.3]]
     },
     {
         "name": "W",
