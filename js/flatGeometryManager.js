@@ -290,6 +290,7 @@ function getComposition(tangentComposition, wave, closed) {
     var p = 0;
 
     var shapedWave = [];
+    var symmetryWave = [];
 
     for (var i = 0; i < fragmentedShape.length - 1; i++) {
 
@@ -337,6 +338,9 @@ function getComposition(tangentComposition, wave, closed) {
                         heigth = segment.points[c];
                     }
                     shapedWave.push(norm.mult(heigth).sum(p2));
+                    if(wave.symmetrical){
+                        symmetryWave.push(norm.mult(-heigth).sum(p2));
+                    }
                 }
             } else {
                 shapedWave.push('b');
@@ -349,45 +353,9 @@ function getComposition(tangentComposition, wave, closed) {
             p = 0;
         }
     }
-    console.log(point);
-
-    /*if (wave.symmetrical) {
-     p = 0;
-     shapedWave.push('b');
-     for (var i = 0; i < segmentedShape.length - 1; i++) {
-     
-     var p1 = segmentedShape[i];
-     var p2 = segmentedShape[i + 1];
-     
-     var vec = new Vector(p1, p2);
-     
-     var norm = vec.rotate(Math.PI / 2);
-     norm.changeLength(1);
-     
-     var segment = wave.segments[p];
-     
-     for (var c = 0; c < segment.points.length; c++) {
-     if (segment.points[c] !== 'b') {
-     var heigth = 0;
-     if (isNaN(segment.points[c])) {
-     heigth = -wave.currentValues.get(segment.points[c]);
-     } else {
-     heigth = -segment.points[c];
-     }
-     shapedWave.push(norm.mult(heigth).sum(p2));
-     } else {
-     shapedWave.push('b');
-     }
-     }
-     
-     if (p < wave.segments.length - 1) {
-     p++;
-     } else {
-     p = 0;
-     }
-     }
-     }*/
-
+    shapedWave.push('b');
+    shapedWave = shapedWave.concat(symmetryWave);
+    
     return shapedWave;
 }
 

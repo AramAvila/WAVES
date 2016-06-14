@@ -86,20 +86,21 @@ function updateCanvas(activeShape, activeWave) {
     var canvasScaleY = canvasWidth / max.x;
 
     /*if (canvasScaleX > canvasScaleY) {
-        canvasScale = canvasScaleY;
-    } else {
-        canvasScale = canvasScaleX;
-    }
+     canvasScale = canvasScaleY;
+     } else {
+     canvasScale = canvasScaleX;
+     }
+     
+     var startX = ($("#preVis").width() - canvasWidth) / 2;
+     var startY = -($("#preVis").height() - canvasHeight) / 2;
+     
+     canvasOrigin.x = startX;
+     canvasOrigin.y = startY;*/
 
-    var startX = ($("#preVis").width() - canvasWidth) / 2;
-    var startY = -($("#preVis").height() - canvasHeight) / 2;
-    
-    canvasOrigin.x = startX;
-    canvasOrigin.y = startY;*/
+    var center = max.sum(min);
+    center = center.scale(0.5);
 
-    var center = new Vector(min, max);
-    center = center.mult(0.5);
-
+    //global gCodeData
     gCodeData = [];
     var lines = [];
     var printLine = [];

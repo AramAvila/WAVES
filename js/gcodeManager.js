@@ -44,15 +44,16 @@ function saveGcode() {
     fileData.push("G28" + lBr);
     fileData.push(";---Reset extruder value" + lBr);
     fileData.push("G92 E0" + lBr);
+    //fileData.push(";---Move to first point" + lBr);
+    fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " Z" + roundNumber(gCodeData[0].start.z + zHeight) + " F" + currentData.feedrateTravel + lBr);
 
+    //fileData.push(";---Build up pressure" + lBr);
+    fileData.push("G1 E" + currentData.buildUpPressExtrusion + " F" + currentData.extruderFeedrate + lBr);
+    fileData.push("G92 E0" + lBr);
+    
     for (var z = 0; z < currentData.layers; z++) {
-
-        //fileData.push(";---Move to first point" + lBr);
-        fileData.push("G1 X" + roundNumber(gCodeData[0].start.x) + " Y" + roundNumber(gCodeData[0].start.y) + " Z" + roundNumber(gCodeData[0].start.z + zHeight) + " F" + currentData.feedrateTravel + lBr);
-
-        //fileData.push(";---Build up pressure" + lBr);
-        fileData.push("G1 E" + currentData.buildUpPressExtrusion + " F" + currentData.extruderFeedrate + lBr);
-        fileData.push("G92 E0" + lBr);
+        fileData.push(";---Printing layer: " + (z+1) + lBr);
+                    
         for (var c = 0; c < gCodeData.length; c++) {
 
             var deltaExtrusion = (Math.PI * (currentData.nozzDiameter * currentData.nozzDiameter) * gCodeData[c].size()) / (Math.PI * (currentData.matDiameter * currentData.matDiameter));
