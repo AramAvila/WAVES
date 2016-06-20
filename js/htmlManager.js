@@ -198,13 +198,18 @@ function isEventSupported(eventName) {
 
 function jsonLoaded(json) {
     console.log("the json has finished loading");
-    
+
     var background = Math.ceil(Math.random() * 11);
-    
+
     $('html').css("background-image", "url(" + "img/backgrounds/bkg" + background + ".jpg)");
-    $('html').css("background-size", "cover");
+    $('html').css("background-image", "url(" + "img/backgrounds/bkg" + background + ".jpg)");
+    $('html').css("background-size", "100%");
     $('html').css("background-repeat", "no-repeat");
-    $('html').css("background-position", "50% 0%");
+    var img = new Image();
+    img.src = "img/backgrounds/bkg" + background + ".jpg";
+    var color = getAverageRGB(img);
+    $('html').css("background-color", "rgba(" + color.r + "," + color.g + "," + color.b + ", 0.5 );");
+    console.log(color);
 
     var selectedWave = $("#waveImageContainer").children()[Math.floor(Math.random() * $(json.wavesData).length)];
     activeWave = waveList.get($(selectedWave).attr("id"));
@@ -229,7 +234,7 @@ function jsonLoaded(json) {
 
     var div = $('<div />', {
         id: "printSize",
-        text: roundNumber(printSize)
+        text: Math.floor(printSize)
     });
 
     $(div).css("background-color", "gray");
@@ -253,7 +258,7 @@ function jsonLoaded(json) {
 
             var currRange = (-currentPos * limit[0] + moveRange * limit[0] + currentPos * limit[1]) / moveRange;
 
-            $(this).text(roundNumber(currRange));
+            $(this).text(Math.floor(currRange));
 
             activeWave.currentValues.set($(this).attr('id'), currRange);
             updatePrevis();
@@ -305,7 +310,7 @@ function updateWaveSettings(wave) {
 
         var div = $('<div />', {
             id: key,
-            text: roundNumber(value)
+            text: Math.floor(value)
         });
 
         $(div).css("background-color", "gray");
@@ -331,7 +336,7 @@ function updateWaveSettings(wave) {
 
                 var currRange = (-currentPos * ranges[0] + moveRange * ranges[0] + currentPos * ranges[1]) / moveRange;
 
-                $(this).text(roundNumber(currRange));
+                $(this).text(Math.floor(currRange));
 
                 activeWave.currentValues.set($(this).attr('id'), currRange);
                 updatePrevis();
@@ -353,4 +358,49 @@ function updateWaveSettings(wave) {
         $(div).css("left", currRange);
 
     });
+}
+
+function getAverageRGB(imgEl) {
+
+    var blockSize = 5; // only visit every 5 pixels
+    var defaultRGB = {r: 0, g: 0, b: 0}; // for non-supporting envs
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext && canvas.getContext('2d');
+    var data, width, height;
+    var i = -4;
+    var length;
+    var rgb = {r: 0, g: 0, b: 0};
+    var count = 0;
+
+    if (!context) {
+        return defaultRGB;
+    }
+
+    height = canvas.height = imgEl.naturalHeight || imgEl.offsetHeight || imgEl.height;
+    width = canvas.width = imgEl.naturalWidth || imgEl.offsetWidth || imgEl.width;
+
+    context.drawImage(imgEl, 0, 0);
+
+    try {
+        data = context.getImageData(0, 0, width, height);
+    } catch (e) {
+        /* security error, img on diff domain */
+        return defaultRGB;
+    }
+
+    length = data.data.length;
+
+    while ((i += blockSize * 4) < length) {
+        ++count;
+        rgb.r += data.data[i];
+        rgb.g += data.data[i + 1];
+        rgb.b += data.data[i + 2];
+    }
+
+    // ~~ used to floor values
+    rgb.r = ~~(rgb.r / count);
+    rgb.g = ~~(rgb.g / count);
+    rgb.b = ~~(rgb.b / count);
+
+    return rgb;
 }
