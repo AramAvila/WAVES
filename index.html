@@ -8,7 +8,7 @@
 
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" ></script>
-        
+
         <script type="text/javascript" src="js/FileSaver.min.js"></script>
         <script type="text/javascript" src="js/paper-full.min.js"></script>
 
@@ -24,27 +24,29 @@
 
         <h1 id="title">WAVES!</h1>
 
+        <div id="shapesManager">
+            <div id="shapeSelector" class="selectors">
+                <div id="shapeImageContainer">
+                </div>
+            </div>
+            <div id="shapeEditor" class="selectors">
+                <ul id="shapeSettings">
+                </ul>
+            </div>
+        </div>
+
         <canvas id="preVis"></canvas>
 
-        <div id="shapeEditor" class="selectors">
-            <ul id="shapeSettings">
-            </ul>
-        </div>
-        <div id="waveEditor" class="selectors">
-            <ul id="waveSettings">
-            </ul>
-        </div>
-        
-        
-        <div id="shapeSelector" class="selectors">
-            <div id="shapeImageContainer">
+        <div id="waveManager">
+            <div id="waveSelector" class="selectors">
+                <div id="waveImageContainer">
+                </div>
+            </div>
+            <div id="waveEditor" class="selectors">
+                <ul id="waveSettings">
+                </ul>
             </div>
         </div>
-        <div id="waveSelector" class="selectors">
-            <div id="waveImageContainer">
-            </div>
-        </div>
-
 
         <div id="buttonsDiv">
             <button id="settings">Settings</button>
