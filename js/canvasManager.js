@@ -104,7 +104,7 @@ function updateCanvas(activeShape, activeWave) {
     gCodeData = [];
     var lines = [];
     var printLine = [];
-    var color1 = true;
+
     for (var i = 0; i < waveComposition.length - 1; i++) {
 
         if (waveComposition[i] !== 'b' && waveComposition[i + 1] !== 'b') {
@@ -112,15 +112,7 @@ function updateCanvas(activeShape, activeWave) {
             var path = new paper.Path(
                     new paper.Point(waveComposition[i].x * canvasScale + canvasOrigin.x, waveComposition[i].y * canvasScale + canvasOrigin.y),
                     new paper.Point(waveComposition[i + 1].x * canvasScale + canvasOrigin.x, waveComposition[i + 1].y * canvasScale + canvasOrigin.y));
-
-            if (color1) {
-                path.strokeColor = new paper.Color("#B7A696");
-                color1 = false;
-            } else {
-                path.strokeColor = new paper.Color("#211E10");
-                color1 = true;
-            }
-
+            path.strokeColor = new paper.Color("#9C4500");
             path.strokeWidth = 3;
             lines.push(path);
             printLine.push(line);

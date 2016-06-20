@@ -198,6 +198,13 @@ function isEventSupported(eventName) {
 
 function jsonLoaded(json) {
     console.log("the json has finished loading");
+    
+    var background = Math.ceil(Math.random() * 11);
+    
+    $('html').css("background-image", "url(" + "img/backgrounds/bkg" + background + ".jpg)");
+    $('html').css("background-size", "cover");
+    $('html').css("background-repeat", "no-repeat");
+    $('html').css("background-position", "50% 0%");
 
     var selectedWave = $("#waveImageContainer").children()[Math.floor(Math.random() * $(json.wavesData).length)];
     activeWave = waveList.get($(selectedWave).attr("id"));
